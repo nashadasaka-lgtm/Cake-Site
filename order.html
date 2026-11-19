@@ -114,6 +114,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
         <label for="phone">Phone or WhatsApp <span class="req">*</span><input id="phone" name="Phone" type="tel" required autocomplete="tel"></label>
       </div>
       <label for="insta">Instagram handle <span class="req">*</span><input id="insta" name="Instagram" required placeholder="@yourname" autocapitalize="none" autocorrect="off" spellcheck="false" pattern="\s*@?[A-Za-z0-9._]{1,30}\s*" title="Your Instagram username, for example @yourname"></label>
+      <label class="check"><input type="checkbox" id="noInsta" name="No Instagram" value="Customer doesn't have Instagram, please contact by email or phone"> I don't have Instagram</label>
     </fieldset>
 
     <fieldset>
@@ -219,6 +220,13 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     $("#dateNote").textContent = days < 14
       ? "That's less than 2 weeks away. No problem, send your enquiry and I'll do my best to fit you in."
       : "Lovely, that gives plenty of time.";
+  });
+
+  // "I don't have Instagram" makes the handle optional
+  $("#noInsta").addEventListener("change", (e) => {
+    const none = e.target.checked, ig = $("#insta");
+    ig.required = !none; ig.disabled = none; if (none) ig.value = "";
+    ig.closest("label").style.opacity = none ? ".45" : "";
   });
 
   // Delivery postcode only when delivery is chosen
