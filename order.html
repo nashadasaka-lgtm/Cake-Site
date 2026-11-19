@@ -74,7 +74,9 @@ label > input, label > select, label > textarea, label > .hint, .label > input, 
 .btn:hover { background: #DCC6AA; }
 .btn[disabled] { opacity: .6; cursor: wait; }
 .send p { margin: 0; font-size: .85rem; color: var(--muted); max-width: 46ch; }
-.error { color: #F0B4A8; font-size: .9rem; }
+.error { color: #F0B4A8; font-size: .95rem; }
+.bad { border-color: #F0B4A8 !important; box-shadow: 0 0 0 1px #F0B4A8; }
+.choices.bad { box-shadow: none; outline: 1px solid #F0B4A8; outline-offset: 4px; }
 /* ===== Live cake preview and price guide ===== */
 .preview { background: var(--panel); padding: 22px 22px 24px; display: grid; gap: 14px; min-width: 0; }
 .preview h2 { margin: 0; font-family: var(--display); font-weight: 400; font-size: 1.5rem; }
@@ -164,7 +166,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     Answers are emailed to you by FormSubmit (formsubmit.co), which is free.
     To change the email address, change it in the line below.
   -->
-  <form id="orderForm" action="https://formsubmit.co/njcakeacademy@outlook.com" method="POST" enctype="multipart/form-data">
+  <form id="orderForm" novalidate action="https://formsubmit.co/njcakeacademy@outlook.com" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="_subject" id="subject" value="New cake enquiry">
     <input type="hidden" name="_template" value="table">
     <input type="hidden" name="_captcha" value="false">
@@ -198,7 +200,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
       </label>
       <div class="row2">
         <label for="date">Collection or delivery date <span class="req">*</span><input id="date" name="Date needed" type="date" required></label>
-        <label for="time">Preferred time <span class="req">*</span><input id="time" name="Preferred time" type="time" required step="900"></label>
+        <label for="time">Preferred time <span class="req">*</span><input id="time" name="Preferred time" type="time" required></label>
       </div>
       <p class="date-note" id="dateNote" aria-live="polite"></p>
       <div class="choices" role="radiogroup" aria-label="Collection or delivery">
@@ -454,18 +456,35 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
 
   // Keep a short summary for the thank-you page celebration
   $("#orderForm").addEventListener("submit", () => {
+    if ([...$("#orderForm").elements].some((el) => el.willValidate && !el.disabled && !el.checkValidity())) return;
     store.set("nj-order-summary", { name: $("#name").value.trim().split(/\s+/)[0], occasion: $("#occasion").value, date: $("#date").value,
       size: $("#what").value, flavour: $("#flavour").value, colours: colIn.value, msg: $("#msg").value, price: $("#priceField").value });
   });
 
   // Clear email subject, and a sending state
   $("#orderForm").addEventListener("submit", (e) => {
-    if (!e.target.checkValidity()) { e.preventDefault(); alertBox("Please fill in the boxes marked with a star."); e.target.reportValidity(); return; }
+    // Check every box ourselves, so we can say exactly which one needs attention
+    document.querySelectorAll(".bad").forEach((el) => el.classList.remove("bad"));
+    const bad = [...e.target.elements].filter((el) => el.willValidate && !el.disabled && !el.checkValidity());
+    if (bad.length) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      const nameOf = (el) => { if (el.type === "radio") return "Collection or delivery"; const l = el.closest("label") || document.querySelector(`label[for="${el.id}"]`) || el.closest("[role=radiogroup]");
+        return l ? (l.getAttribute("aria-label") || l.childNodes[0].textContent).trim().replace(/\s*\*$/, "").replace(/\?$/, "") : el.name; };
+      const names = [...new Set(bad.map(nameOf))];
+      bad.forEach((el) => (el.closest(".choices") || el).classList.add("bad"));
+      const ig = bad.find((el) => el.id === "insta" && el.value);
+      alertBox(ig ? "Please check your Instagram handle. Use letters, numbers, dots or underscores, for example @yourname."
+                  : `Please fill in: ${names.join(", ")}.`);
+      bad[0].focus({ preventScroll: true });
+      (bad[0].closest(".choices") || bad[0]).scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+    $("#formError").hidden = true;
     const name = $("#name").value.trim(), occ = $("#occasion").value, d = date.value;
     $("#subject").value = `New cake enquiry: ${name}${occ ? ", " + occ : ""}${d ? ", " + d.split("-").reverse().join("/") : ""}`;
     $("#sendBtn").disabled = true; $("#sendBtn").textContent = "Sending...";
+    setTimeout(() => { $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; }, 15000);
   });
-  $("#orderForm").addEventListener("invalid", () => alertBox("Please fill in the boxes marked with a star."), true);
   addEventListener("pageshow", () => { $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; });
 </script>
 </body>
