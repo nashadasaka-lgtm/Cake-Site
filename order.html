@@ -482,10 +482,18 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     $("#formError").hidden = true;
     const name = $("#name").value.trim(), occ = $("#occasion").value, d = date.value;
     $("#subject").value = `New cake enquiry: ${name}${occ ? ", " + occ : ""}${d ? ", " + d.split("-").reverse().join("/") : ""}`;
+    // iPhones (Safari) can fail to send a form that has an empty photo box, so leave empty ones out
+    document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => { if (!f.files || !f.files.length) f.disabled = true; });
     $("#sendBtn").disabled = true; $("#sendBtn").textContent = "Sending...";
-    setTimeout(() => { $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; }, 15000);
+    // Safety net: if nothing has happened after 12 seconds, say so and offer another way
+    clearTimeout(window.__sendTimer);
+    window.__sendTimer = setTimeout(() => {
+      $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Try sending again";
+      document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => (f.disabled = false));
+      alertBox("This is taking longer than usual. Please check your internet and try again. Still stuck? Your answers are saved, so you can also DM me on Instagram @cakesbynashadajones or email njcakeacademy@outlook.com.");
+    }, 12000);
   });
-  addEventListener("pageshow", () => { $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; });
+  addEventListener("pageshow", () => { clearTimeout(window.__sendTimer); document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => (f.disabled = false)); $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; });
 </script>
 </body>
 </html>
