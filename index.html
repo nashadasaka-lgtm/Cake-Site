@@ -86,7 +86,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* Hero: full-width photos with the words laid over them */
 .hero { position: relative; background: var(--cocoa); color: var(--latte-soft); overflow: hidden; }
 .hero-media { position: absolute; inset: 0; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; }
-.hero-media img { width: 100%; height: 100%; object-fit: cover; }
+.hero-media img { width: 100%; height: 100%; object-fit: cover; object-position: center 60%; }
 .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(51,34,31,.88) 0%, rgba(51,34,31,.6) 42%, rgba(51,34,31,.08) 100%); }
 .hero .wrap { position: relative; z-index: 1; min-height: clamp(480px, 74vh, 700px); display: flex; align-items: center; padding-block: 64px; }
 .hero-copy { display: grid; gap: 28px; justify-items: start; max-width: 520px; min-width: 0; }
@@ -98,7 +98,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; }
 @media (max-width: 760px) {
   .hero-media img:not(:first-child) { display: none; }
-  .hero::after { background: linear-gradient(0deg, rgba(51,34,31,.9) 0%, rgba(51,34,31,.55) 55%, rgba(51,34,31,.25) 100%); }
+  .hero::after { background: linear-gradient(0deg, rgba(51,34,31,.92) 0%, rgba(51,34,31,.72) 60%, rgba(51,34,31,.45) 100%); }
   .hero .wrap { align-items: flex-end; min-height: 560px; }
 }
 
@@ -267,7 +267,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div class="hero-copy">
         <p class="eyebrow">Buttercream cakes &middot; London</p>
         <h1><img class="hero-wordmark" src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"></h1>
-        <p class="hero-lede">Hand-piped buttercream cakes for birthdays, baby showers, weddings, anniversaries and every celebration in between.</p>
+        <p class="hero-lede">Hand-piped buttercream cakes and cupcakes for birthdays, baby showers, weddings, anniversaries and every celebration in between.</p>
         <div class="actions">
           <a class="btn btn--solid" href="#enquire">Enquire <svg class="arr"><use href="#arr"/></svg></a>
           <a class="link" href="#occasions">View the cakes <svg class="arr"><use href="#arr"/></svg></a>
@@ -322,14 +322,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <p class="eyebrow">All cakes</p>
         <h2>The cake <em>book.</em></h2>
       </div>
-      <div class="tabs" role="tablist" aria-label="Filter cakes by occasion">
-        <button class="tab" role="tab" aria-selected="true" data-filter="all">All</button>
-        <button class="tab" role="tab" aria-selected="false" data-filter="birthday">Birthdays</button>
-        <button class="tab" role="tab" aria-selected="false" data-filter="baby">Baby showers</button>
-        <button class="tab" role="tab" aria-selected="false" data-filter="wedding">Weddings</button>
-        <button class="tab" role="tab" aria-selected="false" data-filter="anniversary">Anniversaries</button>
-        <button class="tab" role="tab" aria-selected="false" data-filter="celebration">Celebrations</button>
-      </div>
+      <div class="tabs" id="tabs" role="tablist" aria-label="Filter cakes by occasion"></div>
       <div class="grid" id="grid"></div>
     </div>
   </section>
@@ -343,10 +336,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <p class="small-note">Orders aren't taken on this site. To book, send me a message or fill in my order form.</p>
       </div>
       <ul class="price-list reveal">
-        <li><span class="name"><b>Birthdays</b><span>Celebration cakes in your colours and theme</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
-        <li><span class="name"><b>Baby showers</b><span>Soft, pretty designs for the new arrival</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
-        <li><span class="name"><b>Weddings</b><span>Tiered buttercream cakes for your day</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
-        <li><span class="name"><b>Anniversaries</b><span>Elegant cakes to mark the years</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
+        <li><span class="name"><b>4 inch cake</b><span>Perfect for a small celebration</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
+        <li><span class="name"><b>6 inch cake</b><span>Our most popular size</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
+        <li><span class="name"><b>8 inch cake</b><span>For bigger parties</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
+        <li><span class="name"><b>Cupcakes</b><span>Box of 12, decorated to match your theme</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
       </ul>
     </div>
   </section>
@@ -368,8 +361,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         </div>
         <div class="tool">
           <label for="guestRange">How many guests?</label>
-          <div class="guests"><span id="guestNum">20</span><small>guests</small></div>
-          <input type="range" id="guestRange" min="5" max="120" step="5" value="20">
+          <div class="guests"><span id="guestNum">12</span><small>guests</small></div>
+          <input type="range" id="guestRange" min="2" max="40" step="2" value="12">
           <div class="tiers" id="tiers" aria-hidden="true"></div>
           <div class="result" id="sizeResult" aria-live="polite"></div>
         </div>
@@ -416,6 +409,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div class="faq">
         <details><summary>How much notice do you need?</summary><div class="answer">I prefer about 2 weeks' notice so I can plan your cake properly. If your date is sooner, still message me. I can often fit shorter notice orders in.</div></details>
         <details><summary>Do you only make buttercream cakes?</summary><div class="answer">Yes. I specialise in buttercream, so every cake is finished in smooth, hand-piped buttercream rather than fondant.</div></details>
+        <details><summary>What sizes do you offer?</summary><div class="answer">I make 4 inch, 6 inch and 8 inch cakes, plus boxes of cupcakes. Not sure which size you need? Try the guest slider above, or ask me.</div></details>
         <details><summary>Do you deliver?</summary><div class="answer">Yes. You can collect your cake, or I can deliver within London. Delivery details and costs are confirmed when you order.</div></details>
         <details><summary>Can I order through this website?</summary><div class="answer">Not directly. This site is a look book of my work. To order, send me a DM on Instagram or fill in my order form, and I'll take it from there.</div></details>
         <details><summary>How do I secure my date?</summary><div class="answer">Once we've agreed your design, I'll send you an invoice. Your date is booked once payment is received.</div></details>
@@ -459,31 +453,40 @@ const LINKS = {
   form: ""         // your order form link
 };
 
-// ---- Photos across the top of the page (one or more) ----
+// ---- Photos across the top of the page (one or more; phones show the first) ----
 const HERO_PHOTOS = [
-  { img: "assets/cakes/moodboard-2.jpg", alt: "Tall caramel drip cake with gold decorations" },
-  { img: "assets/cakes/moodboard-1.jpg", alt: "White buttercream cake with black ribbon bows" },
-  { img: "assets/cakes/moodboard-3.jpg", alt: "Cream cake with dark chocolate drip and cookies" }
+  { img: "assets/cakes/still-not-thirty.jpg", alt: "Cream buttercream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/pearls-and-pressed-flowers.jpg", alt: "Heart-shaped cake with pink piping, pearls, ribbons and dried flowers" },
+  { img: "assets/cakes/birthday-girl-heart.jpg", alt: "White heart cake with black piped border and gold Birthday girl topper" }
 ];
 
-// ---- Occasion cards ----
+// ---- Occasion cards (each shows the first photo with that tag) ----
 const OCCASIONS = [
   { tag: "birthday", name: "Birthdays", line: "Another year, another slice" },
-  { tag: "baby", name: "Baby showers", line: "Welcoming someone new" },
-  { tag: "wedding", name: "Weddings", line: "For your big day" },
-  { tag: "anniversary", name: "Anniversaries", line: "Marking the years together" }
+  { tag: "kids", name: "Kids' parties", line: "Their favourite things, in cake" },
+  { tag: "cupcakes", name: "Cupcakes", line: "Boxes for sharing" },
+  { tag: "celebration", name: "Celebrations", line: "Launches, milestones and more" }
 ];
 
 // ---- Your cakes. Add a new line for each photo. ----
-// tag must be one of: birthday, baby, wedding, anniversary, celebration
+// tag: birthday, kids, cupcakes, celebration, baby, wedding, anniversary
 // favourite: true puts the cake in the swipeable "favourites" row
 const CAKES = [
-  { img: "assets/cakes/moodboard-1.jpg", title: "Ribbons and ruffles", tag: "birthday", favourite: true, alt: "White buttercream cake with black ribbon bows" },
-  { img: "assets/cakes/moodboard-2.jpg", title: "Golden 60th", tag: "birthday", favourite: true, alt: "Tall caramel drip cake with gold decorations and a 60th birthday topper" },
-  { img: "assets/cakes/moodboard-3.jpg", title: "Cookies and cream 21st", tag: "birthday", favourite: true, alt: "Tall cream cake with dark chocolate drip and cookies for a 21st birthday" },
-  { title: "Baby shower", tag: "baby" },
-  { title: "Wedding", tag: "wedding" },
-  { title: "Anniversary", tag: "anniversary" }
+  { img: "assets/cakes/pearls-and-pressed-flowers.jpg", title: "Pearls and pressed flowers", tag: "birthday", favourite: true, alt: "Heart cake with coral piping, pearls, pink ribbons and dried flowers" },
+  { img: "assets/cakes/still-not-thirty.jpg", title: "Still not thirty", tag: "birthday", favourite: true, alt: "Tall cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/twenty-one-pink-heart.jpg", title: "Twenty one in pink", tag: "birthday", favourite: true, alt: "Pink heart cake with shimmer, piped border and a silver crown" },
+  { img: "assets/cakes/birthday-girl-heart.jpg", title: "Birthday girl", tag: "birthday", favourite: true, alt: "White heart cake with black piped border and gold topper" },
+  { img: "assets/cakes/blossom-23.jpg", title: "Blossom 23", tag: "birthday", favourite: true, alt: "Cream cake with blossom flowers, gold butterflies and a pink 23 topper" },
+  { img: "assets/cakes/black-and-gold-30th.jpg", title: "Black and gold 30th", tag: "birthday", favourite: true, alt: "Tall black buttercream cake with gold topper, gold spheres and a toy motorbike" },
+  { img: "assets/cakes/bows-for-bae.jpg", title: "Bows for bae", tag: "birthday", favourite: true, alt: "Cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/football-stars.jpg", title: "Football stars", tag: "kids", alt: "White and red cake with black stars and footballs" },
+  { img: "assets/cakes/mickey-first-birthday.jpg", title: "Mickey first birthday", tag: "kids", alt: "Red and cream first birthday cake with a Mickey Mouse theme" },
+  { img: "assets/cakes/peppa-third-birthday.jpg", title: "Peppa third birthday", tag: "kids", alt: "Pink marbled cake with Peppa Pig toppers, daisies and pastel spheres" },
+  { img: "assets/cakes/arsenal-birthday.jpg", title: "Arsenal birthday", tag: "kids", alt: "Red and cream football club birthday cake with gold details" },
+  { img: "assets/cakes/arsenal-twins.jpg", title: "Double the celebration", tag: "kids", alt: "Red and cream football club cake for two birthdays" },
+  { img: "assets/cakes/pink-rose-cupcakes.jpg", title: "Pink rose cupcakes", tag: "cupcakes", alt: "Box of pink rose-piped cupcakes with pearls, gold leaf and Happy Birthday toppers" },
+  { img: "assets/cakes/pink-rose-cupcakes-boxes.jpg", title: "Two boxes of roses", tag: "cupcakes", alt: "Two boxes of pink rose cupcakes with gold number 3 toppers" },
+  { img: "assets/cakes/book-launch-cupcakes.jpg", title: "Book launch cupcakes", tag: "celebration", alt: "Vanilla cupcakes with cookie pieces, gold pearls and printed book cover toppers" }
 ];
 
 // ---- Your reviews. ----
@@ -493,7 +496,8 @@ const REVIEWS = [
   { text: "And one more here.", who: "Client name, occasion" }
 ];
 
-const TAG_NAMES = { birthday: "Birthday", baby: "Baby shower", wedding: "Wedding", anniversary: "Anniversary", celebration: "Celebration" };
+const TAG_NAMES = { birthday: "Birthday", kids: "Kids", cupcakes: "Cupcakes", celebration: "Celebration", baby: "Baby shower", wedding: "Wedding", anniversary: "Anniversary" };
+const TAB_NAMES = { birthday: "Birthdays", kids: "Kids", cupcakes: "Cupcakes", celebration: "Celebrations", baby: "Baby showers", wedding: "Weddings", anniversary: "Anniversaries" };
 const $ = (s) => document.querySelector(s);
 const toast = (msg) => { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); };
 
@@ -527,6 +531,9 @@ CAKES.forEach((c) => {
   }
   grid.appendChild(el);
 });
+const usedTags = Object.keys(TAB_NAMES).filter((t) => CAKES.some((c) => c.tag === t && c.img));
+$("#tabs").innerHTML = `<button class="tab" role="tab" aria-selected="true" data-filter="all">All</button>` +
+  usedTags.map((t) => `<button class="tab" role="tab" aria-selected="false" data-filter="${t}">${TAB_NAMES[t]}</button>`).join("");
 document.querySelectorAll(".tab").forEach((tab) => tab.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-selected", t === tab));
   const f = tab.dataset.filter;
@@ -557,7 +564,7 @@ $("#occGrid").innerHTML = OCCASIONS.map((o) => {
   return `<a class="occ" href="#cakes" data-go="${o.tag}">${pic}<span class="row"><h3>${o.name}</h3>${arrow}</span><small>${o.line}</small></a>`;
 }).join("");
 document.querySelectorAll("[data-go]").forEach((a) => a.addEventListener("click", () => {
-  document.querySelector(`.tab[data-filter="${a.dataset.go}"]`).click();
+  document.querySelector(`.tab[data-filter="${a.dataset.go}"]`)?.click();
 }));
 
 // Favourites row
@@ -608,15 +615,14 @@ dateIn.addEventListener("change", () => {
 
 // Size guide (a rough guide only)
 const SIZES = [
-  { max: 15, name: "6 inch, one tier", tiers: [70], serves: "about 10 to 15" },
-  { max: 25, name: "8 inch, one tier", tiers: [95], serves: "about 20 to 25" },
-  { max: 40, name: "10 inch, or two tiers", tiers: [115, 80], serves: "about 30 to 40" },
-  { max: 80, name: "Three tiers", tiers: [135, 105, 75], serves: "about 50 to 80" },
-  { max: Infinity, name: "Let's chat", tiers: [150, 125, 100, 75], serves: "a big crowd" }
+  { max: 8, name: "4 inch cake", tiers: [70], serves: "about 4 to 8" },
+  { max: 16, name: "6 inch cake", tiers: [95], serves: "about 10 to 16" },
+  { max: 30, name: "8 inch cake", tiers: [120], serves: "about 20 to 30" },
+  { max: Infinity, name: "Let's chat", tiers: [120, 80], serves: "a big crowd. We can add cupcakes or a second cake" }
 ];
 const range = $("#guestRange");
 function updateSize() {
-  const n = +range.value; $("#guestNum").textContent = n === 120 ? "120+" : n;
+  const n = +range.value; $("#guestNum").textContent = n === 40 ? "40+" : n;
   const s = SIZES.find((x) => n <= x.max);
   $("#tiers").innerHTML = s.tiers.map((w) => `<i style="width:${w}px"></i>`).join("");
   $("#sizeResult").innerHTML = `<b>${s.name}</b><p>Serves ${s.serves}. A rough guide only. I'll confirm the right size with you.</p>`;
