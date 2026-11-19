@@ -7,6 +7,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Buttercream cakes for birthdays, baby showers, weddings, anniversaries and every celebration. Based in London, with pickup and delivery.">
 <link rel="icon" href="assets/brand/seal-brown.png">
+<meta name="theme-color" content="#2E1E19">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Josefin+Sans:wght@300;400;600&display=swap">
@@ -269,6 +270,24 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 .reveal-ready .reveal { opacity: 0; transform: translateY(20px); transition: opacity .9s ease, transform .9s ease; }
 .reveal-ready .reveal.in { opacity: 1; transform: none; }
+
+/* ===== Dark chocolate theme ===== */
+:root {
+  --cream: #2E1E19; --white: #3A2620; --latte-soft: #3F2A23; --line: #5A4034;
+  --cocoa: #F3E7DA; --muted: #C7B19E; --latte: #CCB395; --accent: #CCB395; --accent-hover: #DCC6AA;
+  color-scheme: dark;
+}
+.site-header { background: rgba(46,30,25,.94) !important; }
+.btn--solid { color: #2E1E19; }
+.btn:hover { color: #2E1E19; }
+.xmas-bar, .site-footer, .toast { background: #1F1411; color: var(--latte); }
+.xmas-bar a { color: #F3E7DA; }
+.cta { background: #4A3128; color: #F3E7DA; }
+.cta p { color: var(--latte); }
+.cta-email a, .foot-contact a { color: #F3E7DA; }
+.lightbox { background: rgba(31,20,17,.97) !important; }
+.btn--light { color: #F3E7DA; border-color: var(--latte); }
+.btn--light:hover { background: #F3E7DA; color: #2E1E19; border-color: #F3E7DA; }
 </style>
 </head>
 <body>
@@ -278,7 +297,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <canvas id="snow" aria-hidden="true"></canvas>
 <header class="site-header" id="header">
   <div class="wrap">
-    <a href="#top" aria-label="Cakes by Nashada Jones, back to top"><img class="banner" src="assets/brand/wordmark-brown.png" alt="Cakes by Nashada Jones"></a>
+    <a href="#top" aria-label="Cakes by Nashada Jones, back to top"><img class="banner" src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"></a>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
     <nav class="nav" id="nav" aria-label="Main">
       <a href="#occasions">Cakes</a>
@@ -307,11 +326,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
   <section>
     <div class="wrap">
-      <div class="intro">
-        <div><strong>Buttercream only</strong><span>Smooth, hand-piped, no fondant</span></div>
-        <div><strong>Collection or delivery</strong><span>Delivery arranged for you</span></div>
-        <div><strong>2 weeks' notice</strong><span>Preferred. Sooner? Just ask.</span></div>
-      </div>
       <p class="statement reveal">Every cake is baked to order and finished by hand, from soft ruffles and bows to bold drips and gold details.</p>
     </div>
   </section>
@@ -592,7 +606,7 @@ document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeLb(
 
 // Occasion cards: tap one to see those cakes
 const arrow = '<svg class="arr"><use href="#arr"/></svg>';
-const placeholderPic = '<span class="pic"><img class="ph-mark" src="assets/brand/monogram-brown.png" alt=""></span>';
+const placeholderPic = '<span class="pic"><img class="ph-mark" src="assets/brand/monogram-cream.png" alt=""></span>';
 $("#occGrid").innerHTML = OCCASIONS.filter((o) => CAKES.some((x) => x.tag === o.tag && x.img)).map((o) => {
   const c = CAKES.find((x) => x.tag === o.tag && x.img);
   const pic = c ? `<span class="pic"><img src="${c.img}" alt="${c.alt || c.title}" loading="lazy"></span>` : placeholderPic;
