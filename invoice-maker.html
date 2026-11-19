@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex, nofollow">
 <title>Invoice Maker</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="icon" href="assets/brand/seal-burgundy.png">
+<link rel="icon" href="assets/brand/seal-brown.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Josefin+Sans:wght@300;400;600&display=swap">
@@ -26,7 +26,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 @media (max-width: 520px) { .bar-in { flex-wrap: nowrap; } .bar img { height: 34px; } .bar h1 { font-size: 1.15rem; } .bar .btn { padding: 10px 12px; letter-spacing: .14em; } }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 20px; border: 1px solid currentColor; border-radius: 2px; background: none; color: inherit; cursor: pointer; font: 400 .72rem/1 var(--body); letter-spacing: .2em; text-transform: uppercase; text-decoration: none; transition: background .2s, color .2s; }
 .btn--solid { background: var(--burgundy); border-color: var(--burgundy); color: var(--white); }
-.btn--solid:hover { background: #742435; }
+.btn--solid:hover { background: #573628; }
 .btn--light { border-color: var(--latte); color: var(--latte); }
 .btn--light:hover { background: var(--latte); color: var(--cocoa); }
 .btn--line { border-color: var(--line); background: var(--white); color: var(--cocoa); }
@@ -60,7 +60,7 @@ textarea { min-height: 84px; resize: vertical; }
 .radios { display: flex; gap: 10px; }
 .radios label { flex: 1; display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); padding: 11px 12px; cursor: pointer; font-size: .78rem; color: var(--cocoa); }
 .radios input { width: auto; margin: 0; accent-color: var(--burgundy); }
-.radios label:has(input:checked) { border-color: var(--burgundy); background: #FBF5F5; }
+.radios label:has(input:checked) { border-color: var(--burgundy); background: #F5ECE1; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
 .chip { border: 1px solid var(--line); background: var(--white); padding: 8px 11px; font: 400 .8rem var(--body); color: var(--cocoa); cursor: pointer; border-radius: 999px; }
@@ -229,10 +229,14 @@ const store = {
 };
 const toast = (m) => { const t = $("#toast"); t.textContent = m; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2400); };
 const isoToday = (plus = 0) => { const d = new Date(); d.setDate(d.getDate() + plus); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
-const newNumber = () => { const d = new Date(); return "NJ-" + String(d.getFullYear()).slice(2) + String(d.getMonth() + 1).padStart(2, "0") + String(d.getDate()).padStart(2, "0") + "-" + String(Math.floor(Math.random() * 90) + 10); };
+// Invoice numbers count up on this device: NJ001, NJ002, NJ003...
+const fmtNum = (n) => "NJ" + String(n).padStart(3, "0");
+const lastNumber = () => { const v = store.get("nj-invoice-last"); return Number.isInteger(v) ? v : 0; };
+const newNumber = () => fmtNum(lastNumber() + 1);
+function noteNumber(n) { const m = /^NJ-?(\d+)$/i.exec(String(n || "").trim()); if (m && +m[1] > lastNumber()) store.set("nj-invoice-last", +m[1]); }
 
 const EXAMPLE = {
-  n: newNumber(), date: isoToday(), paid: "none",
+  n: "NJ001", date: isoToday(), paid: "none",
   c: { name: "Example Customer", phone: "07000 000000", email: "" },
   e: { occ: "30th birthday", date: isoToday(24), time: "2pm", method: "collection", addr: "" },
   k: { title: "Cream bows, Still not thirty", size: "6 inch", flavour: "Vanilla with raspberry jam", design: "Cream buttercream with piped shells, black ribbon bows all around", msg: "Still not thirty" },
@@ -315,6 +319,7 @@ $("#makeLink").addEventListener("click", () => {
   const d0 = read();
   if (!d0.bank.sort || !d0.bank.acc) toast("Tip: add your bank details so the customer can pay.");
   const { url, d } = makeLink();
+  if ($("#exampleNote").hidden) noteNumber(d.n);
   const first = (d.c.name || "").split(/\s+/)[0];
   const msg = `Hi${first ? " " + first : ""}, here is your invoice from Cakes by Nashada Jones: ${url}`;
   $("#linkBox").textContent = url;

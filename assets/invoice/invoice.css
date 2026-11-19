@@ -2,10 +2,10 @@
 :root {
   --cocoa: #33221F;
   --latte: #CCB395;
-  --latte-soft: #F2EBE2;
+  --latte-soft: #F2E8DC;
   --line: #E3D7C8;
-  --white: #FFFFFF;
-  --burgundy: #5E1A26;
+  --white: #FFFDF9;
+  --burgundy: #6B4433; /* chestnut brown */
   --muted: #76655D;
   --done: #3F6B4F;
   --display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
