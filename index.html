@@ -165,6 +165,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .price-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
 .price-list li { display: flex; justify-content: space-between; align-items: baseline; gap: 20px; padding: 26px 0; border-bottom: 1px solid var(--line); }
 .price-list .name { display: grid; gap: 2px; }
+.price-list li.group { display: block; padding: 34px 0 12px; font-size: .72rem; letter-spacing: .26em; text-transform: uppercase; color: var(--burgundy); font-weight: 400; }
+.price-list li.group:first-child { padding-top: 18px; }
 .price-list .name b { font-family: var(--display); font-weight: 400; font-size: 1.6rem; }
 .price-list .name span { font-size: .92rem; color: var(--muted); }
 .price-list .amount { font-size: .78rem; letter-spacing: .18em; text-transform: uppercase; white-space: nowrap; }
@@ -329,10 +331,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       </div>
       <div class="reveal">
       <ul class="price-list">
+        <li class="group">Classic cakes</li>
         <li><span class="name"><b>4 inch cake</b><span>Perfect for a small celebration</span></span><span class="amount">from<strong>&pound;55</strong></span></li>
         <li><span class="name"><b>6 inch cake</b><span>A lovely size for most parties</span></span><span class="amount">from<strong>&pound;85</strong></span></li>
         <li><span class="name"><b>8 inch cake</b><span>For bigger celebrations</span></span><span class="amount">from<strong>&pound;95</strong></span></li>
-        <li><span class="name"><b>Cupcakes</b><span>Box of 12, decorated to match your theme</span></span><span class="amount">from<strong>&pound;TBC</strong></span></li>
+        <li class="group">Themed cakes</li>
+        <li><span class="name"><b>6 inch themed cake</b><span>Characters, sports, names and custom toppers</span></span><span class="amount">from<strong>&pound;125</strong></span></li>
+        <li><span class="name"><b>8 inch themed cake</b><span>A bigger showstopper for your theme</span></span><span class="amount">from<strong>&pound;145</strong></span></li>
+        <li class="group">Cupcakes</li>
+        <li><span class="name"><b>Box of 12 cupcakes</b><span>Minimum order. Decorated to match your theme</span></span><span class="amount">from<strong>&pound;35</strong></span></li>
       </ul>
         <div class="budget" style="margin-top: 28px">
           <b>On a budget?</b>
@@ -409,6 +416,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <details><summary>Do you only make buttercream cakes?</summary><div class="answer">Yes. I specialise in buttercream, so every cake is finished in smooth, hand-piped buttercream rather than fondant.</div></details>
         <details><summary>What sizes do you offer?</summary><div class="answer">I make 4 inch, 6 inch and 8 inch cakes, plus boxes of cupcakes. Not sure which size you need? Try the guest slider above, or ask me.</div></details>
         <details><summary>Can I bring my own toppers or decorations?</summary><div class="answer">Yes. If you're on a budget, you can buy your own toppers and decorations and I'll put them on your cake for you. Just let me know when you order.</div></details>
+        <details><summary>Is there a minimum order for cupcakes?</summary><div class="answer">Yes. Cupcakes come in boxes of 12, which is the minimum order. A box starts from &pound;35.</div></details>
         <details><summary>Do you deliver?</summary><div class="answer">Yes. You can collect your cake, or I can deliver within London. Delivery details and costs are confirmed when you order.</div></details>
         <details><summary>Can I order through this website?</summary><div class="answer">Not directly. This site is a look book of my work. To order, send me a DM on Instagram or fill in my order form, and I'll take it from there.</div></details>
         <details><summary>How do I secure my date?</summary><div class="answer">Once we've agreed your design, I'll send you an invoice. Your date is booked once payment is received.</div></details>
