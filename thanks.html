@@ -16,15 +16,57 @@
   h1 { margin: 0; font-family: "Italiana", Georgia, serif; font-weight: 400; font-size: clamp(2.4rem, 8vw, 3.4rem); line-height: 1.1; }
   h1 em { font-family: "Cormorant Garamond", Georgia, serif; font-style: italic; }
   p { margin: 0; color: var(--muted); line-height: 1.7; }
+  .summary { width: 100%; text-align: left; background: #3A2620; border: 1px solid #5A4034; padding: 20px 22px; display: grid; gap: 10px; }
+  .summary h2 { margin: 0 0 4px; font-family: "Italiana", Georgia, serif; font-weight: 400; font-size: 1.5rem; color: var(--text); }
+  .summary div { display: grid; grid-template-columns: 110px 1fr; gap: 12px; font-size: .95rem; border-top: 1px solid #5A4034; padding-top: 10px; }
+  .summary dt { font-size: .66rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .summary dd { margin: 0; color: var(--text); overflow-wrap: anywhere; }
+  #confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
   a.btn { margin-top: 10px; display: inline-block; padding: 16px 30px; background: var(--latte); color: var(--deep); text-decoration: none; font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; border-radius: 2px; }
 </style>
 </head>
 <body>
 <main>
   <img src="assets/brand/seal-cream.png" alt="">
-  <h1>Thank you, your enquiry is <em>sent.</em></h1>
+  <h1 id="title">Thank you, your enquiry is <em>sent.</em></h1>
   <p>I'll be in touch soon, usually within 48 hours, with ideas and a quote. Keep an eye on your email, including your junk folder.</p>
+  <dl class="summary" id="summary" hidden><h2>What you asked for</h2></dl>
   <a class="btn" href="/">Back to the cakes</a>
 </main>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<script>
+  const store = { get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (_) { return null; } }, del(k) { try { localStorage.removeItem(k); } catch (_) {} } };
+  const esc = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  // Their order summary
+  const s = store.get("nj-order-summary");
+  if (s) {
+    if (s.name) document.getElementById("title").innerHTML = `Thank you, ${esc(s.name)}! Your enquiry is <em>sent.</em>`;
+    const fmt = (iso) => { if (!iso) return ""; const [y, m, d] = iso.split("-").map(Number); return new Date(y, m - 1, d).toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }); };
+    const rows = [["Occasion", s.occasion], ["Date", fmt(s.date)], ["Cake", s.size], ["Flavour", s.flavour], ["Colours", s.colours], ["On the cake", s.msg], ["Price guide", s.price]].filter((r) => r[1]);
+    const box = document.getElementById("summary");
+    box.insertAdjacentHTML("beforeend", rows.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join(""));
+    box.hidden = !rows.length;
+  }
+  // Sent, so the saved answers are no longer needed
+  store.del("nj-order-draft"); store.del("nj-order-summary");
+
+  // A burst of sprinkles
+  (function () {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const c = document.getElementById("confetti"), ctx = c.getContext("2d"), r = devicePixelRatio || 1;
+    const W = innerWidth, H = innerHeight; c.width = W * r; c.height = H * r; ctx.scale(r, r);
+    const cols = ["#F2B8C6", "#CCB395", "#F3E7DA", "#D4AF37", "#BFD9F2", "#BDE6D3", "#F6DC6B"];
+    const bits = Array.from({ length: 140 }, () => ({ x: W / 2 + (Math.random() - .5) * 80, y: H * .35, vx: (Math.random() - .5) * 11, vy: -Math.random() * 12 - 4,
+      w: 3 + Math.random() * 3, h: 9 + Math.random() * 7, a: Math.random() * 6.3, va: (Math.random() - .5) * .3, c: cols[Math.floor(Math.random() * cols.length)] }));
+    let t = 0;
+    (function tick() {
+      ctx.clearRect(0, 0, W, H); t++;
+      for (const b of bits) { b.vy += .28; b.vx *= .99; b.x += b.vx; b.y += b.vy; b.a += b.va;
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(b.a); ctx.fillStyle = b.c; ctx.globalAlpha = Math.max(0, 1 - t / 220);
+        ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-b.w / 2, -b.h / 2, b.w, b.h, 2) : ctx.rect(-b.w / 2, -b.h / 2, b.w, b.h); ctx.fill(); ctx.restore(); }
+      if (t < 220) requestAnimationFrame(tick); else c.remove();
+    })();
+  })();
+</script>
 </body>
 </html>
