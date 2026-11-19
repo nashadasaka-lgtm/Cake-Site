@@ -3,11 +3,11 @@
   "rewrites": [
     {
       "source": "/order-confirmation",
-      "destination": "/invoice.html"
+      "destination": "/invoice"
     },
     {
       "source": "/order-maker",
-      "destination": "/invoice-maker.html"
+      "destination": "/invoice-maker"
     }
   ],
   "headers": [
