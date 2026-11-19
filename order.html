@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Order Form · Cakes by Nashada Jones</title>
+<meta name="description" content="Enquire about a buttercream cake or cupcakes from Cakes by Nashada Jones, London.">
+<meta name="theme-color" content="#2E1E19">
+<link rel="icon" href="assets/brand/seal-brown.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Josefin+Sans:wght@300;400;600&display=swap">
+<style>
+/* Same dark chocolate palette as the main site */
+:root {
+  --bg: #2E1E19; --panel: #3A2620; --field: #2E1E19; --line: #5A4034;
+  --text: #F3E7DA; --muted: #C7B19E; --latte: #CCB395; --deep: #1F1411; --ok: #9FC2A0;
+  --display: "Italiana", "Didot", "Bodoni 72", Georgia, serif;
+  --script: "Cormorant Garamond", Georgia, serif;
+  --body: "Josefin Sans", "Futura", "Century Gothic", system-ui, sans-serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--body); font-weight: 300; font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--latte); outline-offset: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+header { border-bottom: 1px solid var(--line); }
+header .wrap { max-width: 1120px; display: flex; justify-content: space-between; align-items: center; height: 72px; }
+header img { height: 46px; width: auto; display: block; }
+.back { text-decoration: none; font-size: .74rem; letter-spacing: .22em; text-transform: uppercase; color: var(--latte); }
+.intro { padding-block: clamp(40px, 7vw, 72px) 30px; text-align: center; display: grid; gap: 14px; justify-items: center; }
+.eyebrow { margin: 0; font-size: .74rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
+h1 { margin: 0; font-family: var(--display); font-weight: 400; font-size: clamp(2.4rem, 7vw, 3.6rem); line-height: 1.1; }
+h1 em, h2 em { font-family: var(--script); font-style: italic; }
+.intro p { margin: 0; color: var(--muted); max-width: 48ch; }
+.notes { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 26px; font-size: .9rem; }
+.notes span::before { content: "\2726"; color: var(--latte); margin-right: 8px; font-size: .75rem; }
+
+form { display: grid; gap: 18px; padding-bottom: 64px; }
+fieldset { margin: 0; border: 0; background: var(--panel); padding: clamp(20px, 4vw, 30px); display: grid; gap: 16px; min-width: 0; }
+legend { float: left; width: 100%; padding: 0; font-family: var(--display); font-size: 1.6rem; }
+legend + * { clear: both; }
+label, .label { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 6px; row-gap: 8px; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.req { color: var(--latte); }
+.opt { text-transform: none; letter-spacing: 0; font-size: .8rem; }
+input, select, textarea { width: 100%; min-width: 0; max-width: 100%; display: block; font: 400 1rem/1.3 var(--body); color: var(--text); background: var(--field); border: 1px solid var(--line); border-radius: 2px; padding: 13px 14px; letter-spacing: normal; text-transform: none; -webkit-appearance: none; appearance: none; }
+select { background-image: linear-gradient(45deg, transparent 50%, var(--latte) 50%), linear-gradient(135deg, var(--latte) 50%, transparent 50%); background-position: calc(100% - 20px) 55%, calc(100% - 15px) 55%; background-size: 5px 5px; background-repeat: no-repeat; padding-right: 38px; }
+input[type="date"] { height: 50px; }
+input[type="date"]::-webkit-date-and-time-value { text-align: left; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--latte); }
+textarea { min-height: 110px; resize: vertical; }
+input[type="file"] { padding: 11px; font-size: .9rem; }
+input[type="file"]::file-selector-button { font: 400 .72rem var(--body); letter-spacing: .16em; text-transform: uppercase; background: var(--latte); color: var(--deep); border: 0; padding: 9px 12px; margin-right: 12px; border-radius: 2px; cursor: pointer; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 560px) { .row2 { grid-template-columns: 1fr; } }
+.choices { display: flex; flex-wrap: wrap; gap: 10px; }
+.choice { flex: 1 1 140px; display: flex; flex-wrap: nowrap; align-items: center; gap: 10px; border: 1px solid var(--line); padding: 13px 14px; cursor: pointer; font-size: .85rem; letter-spacing: .06em; text-transform: none; color: var(--text); }
+.choice input { width: auto; margin: 0; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; }
+.choice input, .check input { flex: 0 0 auto !important; }
+.choice:has(input:checked) { border-color: var(--latte); background: rgba(204,179,149,.08); }
+.check { display: flex; flex-wrap: nowrap; gap: 12px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--text); cursor: pointer; }
+.check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; flex: none; }
+label > input, label > select, label > textarea, .label > input, .label > .hint { flex: 0 0 100%; }
+.hint { font-size: .85rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
+.date-note { font-size: .9rem; text-transform: none; letter-spacing: 0; color: var(--latte); min-height: 1.4em; }
+.honey { position: absolute; left: -9999px; }
+.send { display: grid; gap: 14px; justify-items: center; text-align: center; padding-top: 6px; }
+.btn { display: inline-flex; align-items: center; gap: 12px; padding: 17px 34px; border: 0; border-radius: 2px; background: var(--latte); color: var(--deep); font: 400 .8rem/1 var(--body); letter-spacing: .22em; text-transform: uppercase; cursor: pointer; transition: background .2s; }
+.btn:hover { background: #DCC6AA; }
+.btn[disabled] { opacity: .6; cursor: wait; }
+.send p { margin: 0; font-size: .85rem; color: var(--muted); max-width: 46ch; }
+.error { color: #F0B4A8; font-size: .9rem; }
+footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(30px + env(safe-area-inset-bottom, 0px)); font-size: .85rem; text-align: center; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="/" aria-label="Cakes by Nashada Jones home"><img src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"></a>
+    <a class="back" href="/">&larr; Back to the cakes</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <p class="eyebrow">Order form</p>
+    <h1>Let's plan your <em>cake.</em></h1>
+    <p>Tell me about your celebration and I'll come back to you with ideas and a quote. Nothing is paid here.</p>
+    <div class="notes"><span>About 2 weeks' notice preferred</span><span>50% deposit secures your date</span></div>
+  </section>
+
+  <!--
+    Answers are emailed to you by FormSubmit (formsubmit.co), which is free.
+    To change the email address, change it in the line below.
+  -->
+  <form id="orderForm" action="https://formsubmit.co/njcakeacademy@outlook.com" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="_subject" id="subject" value="New cake enquiry">
+    <input type="hidden" name="_template" value="table">
+    <input type="hidden" name="_captcha" value="false">
+    <input type="hidden" name="_next" id="nextUrl" value="">
+    <input type="hidden" name="_autoresponse" value="Thank you for your cake enquiry! I've received your details and will be in touch soon with ideas and a quote. Nashada, Cakes by Nashada Jones">
+    <input type="text" name="_honey" class="honey" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+    <fieldset>
+      <legend>Your details</legend>
+      <label for="name">Full name <span class="req">*</span><input id="name" name="Name" required autocomplete="name"></label>
+      <div class="row2">
+        <label for="email">Email <span class="req">*</span><input id="email" name="email" type="email" required autocomplete="email"></label>
+        <label for="phone">Phone or WhatsApp <span class="req">*</span><input id="phone" name="Phone" type="tel" required autocomplete="tel"></label>
+      </div>
+      <label for="insta">Instagram handle <span class="opt">(optional)</span><input id="insta" name="Instagram" placeholder="@yourname"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Your celebration</legend>
+      <div class="row2">
+        <label for="occasion">Occasion <span class="req">*</span>
+          <select id="occasion" name="Occasion" required>
+            <option value="">Choose one</option>
+            <option>Birthday</option><option>Kids' party</option><option>Baby shower</option>
+            <option>Christening</option><option>Wedding</option><option>Anniversary</option>
+            <option>Christmas</option><option>Business or event</option><option>Other</option>
+          </select>
+        </label>
+        <label for="date">Date needed <span class="req">*</span><input id="date" name="Date needed" type="date" required></label>
+      </div>
+      <p class="date-note" id="dateNote" aria-live="polite"></p>
+      <div class="row2">
+        <label for="what">What would you like? <span class="req">*</span>
+          <select id="what" name="Order" required>
+            <option value="">Choose one</option>
+            <option>4 inch cake (from &pound;55)</option>
+            <option>6 inch cake (from &pound;85)</option>
+            <option>8 inch cake (from &pound;100)</option>
+            <option>6 inch themed cake (from &pound;125)</option>
+            <option>8 inch themed cake (from &pound;145)</option>
+            <option>Box of 12 cupcakes (from &pound;35)</option>
+            <option>Cake and cupcakes</option>
+            <option>Not sure yet</option>
+          </select>
+        </label>
+        <label for="guests">Number of guests <span class="opt">(optional)</span><input id="guests" name="Guests" type="number" min="1" inputmode="numeric"></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>The design</legend>
+      <label for="design">Theme, colours and ideas <span class="req">*</span><textarea id="design" name="Design ideas" required placeholder="For example: pink and gold, heart shape, piped roses, pearls"></textarea></label>
+      <div class="row2">
+        <label for="flavour">Flavour <span class="opt">(optional)</span><input id="flavour" name="Flavour" placeholder="Happy to discuss"></label>
+        <label for="msg">Message on the cake <span class="opt">(optional)</span><input id="msg" name="Message on cake" placeholder="e.g. Happy 30th Ryan"></label>
+      </div>
+      <div class="label">Inspiration photos <span class="opt">(optional, up to 2, max 5MB each)</span>
+        <input type="file" name="Inspiration photo 1" accept="image/*" aria-label="Inspiration photo 1">
+        <input type="file" name="Inspiration photo 2" accept="image/*" aria-label="Inspiration photo 2">
+        <span class="hint">Got more? Send them to me on Instagram.</span>
+      </div>
+      <label class="check"><input type="checkbox" name="Own toppers" value="Yes, I'll supply my own toppers or decorations"> I'd like to supply my own toppers or decorations</label>
+      <label for="allergies">Allergies or dietary needs <span class="opt">(optional)</span><input id="allergies" name="Allergies"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Collection or delivery</legend>
+      <div class="choices" role="radiogroup" aria-label="Collection or delivery">
+        <label class="choice"><input type="radio" name="Collection or delivery" value="Collection" required> Collection</label>
+        <label class="choice"><input type="radio" name="Collection or delivery" value="Delivery"> Delivery (arranged for you)</label>
+      </div>
+      <label for="postcode" id="postcodeWrap" hidden>Delivery postcode <span class="req">*</span><input id="postcode" name="Delivery postcode" autocomplete="postal-code"></label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Anything else?</legend>
+      <label for="budget">Budget <span class="opt">(optional)</span>
+        <select id="budget" name="Budget">
+          <option value="">Prefer not to say</option>
+          <option>Under &pound;75</option><option>&pound;75 to &pound;100</option><option>&pound;100 to &pound;150</option><option>&pound;150 or more</option>
+        </select>
+      </label>
+      <label for="heard">How did you hear about me? <span class="opt">(optional)</span>
+        <select id="heard" name="Heard about me from">
+          <option value="">Choose one</option><option>Instagram</option><option>TikTok</option><option>A friend or family</option><option>I've ordered before</option><option>Other</option>
+        </select>
+      </label>
+      <label for="notes">Anything else I should know? <span class="opt">(optional)</span><textarea id="notes" name="Other notes"></textarea></label>
+    </fieldset>
+
+    <div class="send">
+      <button class="btn" type="submit" id="sendBtn">Send my enquiry</button>
+      <p class="error" id="formError" hidden>Please fill in the boxes marked with a star.</p>
+      <p>I'll reply by email or Instagram, usually within 48 hours.</p>
+    </div>
+  </form>
+</main>
+
+<footer>Cakes by Nashada Jones &middot; Buttercream cakes &middot; London</footer>
+
+<script>
+  const $ = (s) => document.querySelector(s);
+  // After sending, bring them back to the thank-you page on this site
+  $("#nextUrl").value = location.origin + "/thanks";
+
+  // Date: no past dates, and a friendly notice reminder
+  const date = $("#date");
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  date.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  date.addEventListener("change", () => {
+    if (!date.value) { $("#dateNote").textContent = ""; return; }
+    const [y, m, d] = date.value.split("-").map(Number);
+    const days = Math.round((new Date(y, m - 1, d) - today) / 86400000);
+    $("#dateNote").textContent = days < 14
+      ? "That's less than 2 weeks away. No problem, send your enquiry and I'll do my best to fit you in."
+      : "Lovely, that gives plenty of time.";
+  });
+
+  // Delivery postcode only when delivery is chosen
+  document.querySelectorAll('input[name="Collection or delivery"]').forEach((r) => r.addEventListener("change", () => {
+    const del = r.value === "Delivery" && r.checked;
+    $("#postcodeWrap").hidden = !del; $("#postcode").required = del;
+  }));
+
+  // Photos: keep them under 5MB
+  document.querySelectorAll('input[type="file"]').forEach((f) => f.addEventListener("change", () => {
+    if (f.files[0] && f.files[0].size > 5 * 1024 * 1024) { f.value = ""; alertBox("That photo is too big. Please choose one under 5MB."); }
+  }));
+  function alertBox(t) { const e = $("#formError"); e.textContent = t; e.hidden = false; }
+
+  // Clear email subject, and a sending state
+  $("#orderForm").addEventListener("submit", (e) => {
+    if (!e.target.checkValidity()) { e.preventDefault(); alertBox("Please fill in the boxes marked with a star."); e.target.reportValidity(); return; }
+    const name = $("#name").value.trim(), occ = $("#occasion").value, d = date.value;
+    $("#subject").value = `New cake enquiry: ${name}${occ ? ", " + occ : ""}${d ? ", " + d.split("-").reverse().join("/") : ""}`;
+    $("#sendBtn").disabled = true; $("#sendBtn").textContent = "Sending...";
+  });
+  $("#orderForm").addEventListener("invalid", () => alertBox("Please fill in the boxes marked with a star."), true);
+  addEventListener("pageshow", () => { $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; });
+</script>
+</body>
+</html>
