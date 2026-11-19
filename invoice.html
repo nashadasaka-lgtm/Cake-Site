@@ -4,15 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Your Invoice · Cakes by Nashada Jones</title>
+<title>Your Cake Order · Cakes by Nashada Jones</title>
 <link rel="icon" href="assets/brand/seal-brown.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Cormorant+Garamond:ital,wght@1,400;1,500&family=Josefin+Sans:wght@300;400;600&display=swap">
 <link rel="stylesheet" href="assets/invoice/invoice.css">
 <style>
-  body { margin: 0; background: var(--latte-soft); padding: clamp(0px, 4vw, 48px) 0; padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
-  .empty { max-width: 520px; margin: 18vh auto; padding: 0 20px; text-align: center; font-family: var(--body); color: var(--cocoa); display: grid; gap: 14px; justify-items: center; }
+  body { margin: 0; background: var(--cocoa); padding: clamp(0px, 4vw, 48px) 0; padding-left: max(0px, env(safe-area-inset-left, 0px)); padding-right: max(0px, env(safe-area-inset-right, 0px)); }
+  .empty { max-width: 520px; margin: 18vh auto; padding: 0 20px; text-align: center; font-family: var(--body); color: var(--latte-soft); display: grid; gap: 14px; justify-items: center; }
   .empty img { height: 60px; }
   .empty h1 { font-family: var(--display); font-weight: 400; font-size: 2.2rem; margin: 0; }
   .empty p { color: var(--muted); margin: 0; }
@@ -28,10 +28,10 @@
   try { const m = location.hash.match(/d=([A-Za-z0-9_-]+)/); if (m) data = NJInvoice.decode(m[1]); } catch (_) { data = null; }
   if (data) {
     app.innerHTML = NJInvoice.render(data, { printButton: true });
-    document.title = `Invoice ${data.n || ""} · Cakes by Nashada Jones`;
+    document.title = `Your cake order ${data.n || ""} · Cakes by Nashada Jones`;
     NJInvoice.bind(app);
   } else {
-    app.innerHTML = `<div class="empty"><img src="assets/brand/wordmark-brown.png" alt="Cakes by Nashada Jones"><h1>Invoice not found</h1><p>This link looks incomplete. Please check you copied the whole link, or message me and I'll send it again.</p></div>`;
+    app.innerHTML = `<div class="empty"><img src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"><h1>Order not found</h1><p>This link looks incomplete. Please check you copied the whole link, or message me and I'll send it again.</p></div>`;
   }
 </script>
 </body>

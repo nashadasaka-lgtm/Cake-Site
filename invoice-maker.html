@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Invoice Maker</title>
+<title>Order Maker</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="assets/brand/seal-brown.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,8 +89,8 @@ textarea { min-height: 84px; resize: vertical; }
 <body>
 <header class="bar">
   <div class="bar-in">
-    <div class="bar-left"><img src="assets/brand/monogram-cream.png" alt=""><h1>Invoice maker</h1></div>
-    <button class="btn btn--light" id="newBtn" type="button">New invoice</button>
+    <div class="bar-left"><img src="assets/brand/monogram-cream.png" alt=""><h1>Order maker</h1></div>
+    <button class="btn btn--light" id="newBtn" type="button">New order</button>
   </div>
 </header>
 <div class="tabs" role="tablist" aria-label="Edit or preview">
@@ -100,12 +100,12 @@ textarea { min-height: 84px; resize: vertical; }
 
 <div class="layout" id="layout" data-view="edit">
   <form class="form" id="form" autocomplete="off">
-    <p class="example" id="exampleNote" hidden>This is an example invoice so you can see how it works. Tap <b>New invoice</b> to start your own.</p>
+    <p class="example" id="exampleNote" hidden>This is an example order so you can see how it works. Tap <b>New order</b> to start your own.</p>
 
     <fieldset>
-      <legend>Invoice</legend>
+      <legend>Order</legend>
       <div class="row2">
-        <label>Invoice number<input id="n"></label>
+        <label>Order number<input id="n"></label>
         <label>Date<input id="date" type="date"></label>
       </div>
       <label>Payment status
@@ -176,7 +176,7 @@ textarea { min-height: 84px; resize: vertical; }
 
     <fieldset>
       <legend>Your bank details</legend>
-      <p class="legend-note">These are not stored on your website. They only appear inside the invoice links you send.</p>
+      <p class="legend-note">These are not stored on your website. They only appear inside the order links you send.</p>
       <label>Account name<input id="bName"></label>
       <div class="row2">
         <label>Sort code<input id="bSort" inputmode="numeric" placeholder="00-00-00"></label>
@@ -188,13 +188,13 @@ textarea { min-height: 84px; resize: vertical; }
 
     <fieldset>
       <legend>Note to customer</legend>
-      <label>Shown at the bottom of the invoice<textarea id="notes"></textarea></label>
+      <label>Shown at the bottom of their order page<textarea id="notes"></textarea></label>
     </fieldset>
 
     <section class="share">
-      <h2>Send the invoice</h2>
+      <h2>Send it to your customer</h2>
       <p>Create the link, then send it to your customer. If you change anything later, create a new link and send that one.</p>
-      <div class="acts"><button class="btn btn--solid" type="button" id="makeLink">Create invoice link</button></div>
+      <div class="acts"><button class="btn btn--solid" type="button" id="makeLink">Create order link</button></div>
       <div id="linkOut" hidden>
         <div class="link-box" id="linkBox"></div>
         <div class="acts" style="margin-top: 12px">
@@ -207,7 +207,7 @@ textarea { min-height: 84px; resize: vertical; }
     </section>
   </form>
 
-  <div class="preview" id="preview" aria-label="Invoice preview"></div>
+  <div class="preview" id="preview" aria-label="Order preview"></div>
 </div>
 <div class="toast" id="toast" role="status"></div>
 
@@ -321,10 +321,10 @@ $("#makeLink").addEventListener("click", () => {
   const { url, d } = makeLink();
   if ($("#exampleNote").hidden) noteNumber(d.n);
   const first = (d.c.name || "").split(/\s+/)[0];
-  const msg = `Hi${first ? " " + first : ""}, here is your invoice from Cakes by Nashada Jones: ${url}`;
+  const msg = `Hi${first ? " " + first : ""}, here are your cake order details from Cakes by Nashada Jones, including how to secure your date: ${url}`;
   $("#linkBox").textContent = url;
   $("#waLink").href = "https://wa.me/?text=" + encodeURIComponent(msg);
-  $("#mailLink").href = `mailto:${encodeURIComponent(d.c.email || "")}?subject=${encodeURIComponent("Your invoice " + d.n + " from Cakes by Nashada Jones")}&body=${encodeURIComponent(msg)}`;
+  $("#mailLink").href = `mailto:${encodeURIComponent(d.c.email || "")}?subject=${encodeURIComponent("Your cake order " + d.n + " from Cakes by Nashada Jones")}&body=${encodeURIComponent(msg)}`;
   $("#openLink").href = url;
   $("#linkOut").hidden = false;
 });
@@ -337,9 +337,9 @@ $("#copyLink").addEventListener("click", () => {
 // New invoice (tap twice to confirm)
 let clearArmed = false;
 $("#newBtn").addEventListener("click", () => {
-  if (!clearArmed && $("#exampleNote").hidden) { clearArmed = true; $("#newBtn").textContent = "Tap again to clear"; setTimeout(() => { clearArmed = false; $("#newBtn").textContent = "New invoice"; }, 3000); return; }
-  clearArmed = false; $("#newBtn").textContent = "New invoice";
-  load(BLANK()); $("#exampleNote").hidden = true; update(); scrollTo({ top: 0 }); toast("New invoice started. Your bank details were kept.");
+  if (!clearArmed && $("#exampleNote").hidden) { clearArmed = true; $("#newBtn").textContent = "Tap again to clear"; setTimeout(() => { clearArmed = false; $("#newBtn").textContent = "New order"; }, 3000); return; }
+  clearArmed = false; $("#newBtn").textContent = "New order";
+  load(BLANK()); $("#exampleNote").hidden = true; update(); scrollTo({ top: 0 }); toast("New order started. Your bank details were kept.");
 });
 
 // Phone tabs
