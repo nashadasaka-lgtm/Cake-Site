@@ -146,7 +146,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     <fieldset>
       <legend>Your cake</legend>
       <label for="what">Cake size <span class="req">*</span>
-        <span class="hint">These are starting prices. All cakes include a buttercream finish in your chosen colour and a personalised acrylic topper. Extra details can be added after.</span>
+        <span class="hint">These are starting prices. All cakes include a buttercream finish in your chosen colour and a personalised topper. Want an acrylic topper instead? That's an extra &pound;10.</span>
         <select id="what" name="Cake size" required>
           <option value="">Choose one</option>
           <option>4" tall (serves 2 to 5), from &pound;55</option>
@@ -183,6 +183,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
         <input type="file" name="Inspiration photo 2" accept="image/*" aria-label="Inspiration photo 2">
         <span class="hint">Got more? Send them to me on Instagram.</span>
       </div>
+      <label class="check"><input type="checkbox" name="Acrylic topper" value="Yes, please upgrade to an acrylic topper (+£10)"> Upgrade to an acrylic topper (+&pound;10)</label>
       <label class="check"><input type="checkbox" name="Own toppers" value="Yes, I'll supply my own toppers or decorations"> I'd like to supply my own toppers or decorations</label>
       <label for="allergies">Any allergies? <span class="req">*</span><input id="allergies" name="Allergies" required placeholder="Write 'None' if not"></label>
     </fieldset>
