@@ -1,6 +1,28 @@
 {
   "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/order-confirmation",
+      "destination": "/invoice.html"
+    },
+    {
+      "source": "/order-maker",
+      "destination": "/invoice-maker.html"
+    }
+  ],
   "headers": [
-    { "source": "/invoice(.*)", "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }, { "key": "Referrer-Policy", "value": "no-referrer" }] }
+    {
+      "source": "/(invoice|order-confirmation|order-maker)(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "no-referrer"
+        }
+      ]
+    }
   ]
 }

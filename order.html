@@ -62,7 +62,7 @@ input[type="file"]::file-selector-button { font: 400 .72rem var(--body); letter-
 .choice:has(input:checked) { border-color: var(--latte); background: rgba(204,179,149,.08); }
 .check { display: flex; flex-wrap: nowrap; gap: 12px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--text); cursor: pointer; }
 .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; flex: none; }
-label > input, label > select, label > textarea, .label > input, .label > .hint { flex: 0 0 100%; }
+label > input, label > select, label > textarea, label > .hint, .label > input, .label > .hint { flex: 0 0 100%; }
 .hint { font-size: .85rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
 .date-note { font-size: .9rem; text-transform: none; letter-spacing: 0; color: var(--latte); min-height: 1.4em; }
 .honey { position: absolute; left: -9999px; }
@@ -105,7 +105,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
 
     <fieldset>
       <legend>Your details</legend>
-      <label for="name">Full name <span class="req">*</span><input id="name" name="Name" required autocomplete="name"></label>
+      <label for="name">Name <span class="req">*</span><input id="name" name="Name" required autocomplete="name"></label>
       <div class="row2">
         <label for="email">Email <span class="req">*</span><input id="email" name="email" type="email" required autocomplete="email"></label>
         <label for="phone">Phone or WhatsApp <span class="req">*</span><input id="phone" name="Phone" type="tel" required autocomplete="tel"></label>
@@ -115,54 +115,19 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
 
     <fieldset>
       <legend>Your celebration</legend>
+      <label for="occasion">Event type <span class="req">*</span>
+        <select id="occasion" name="Event type" required>
+          <option value="">Choose one</option>
+          <option>Adult birthday</option><option>Kids' birthday</option><option>Baby shower</option>
+          <option>Gender reveal</option><option>Christening</option><option>Wedding</option>
+          <option>Anniversary</option><option>Christmas</option><option>Business or event</option><option>Other</option>
+        </select>
+      </label>
       <div class="row2">
-        <label for="occasion">Occasion <span class="req">*</span>
-          <select id="occasion" name="Occasion" required>
-            <option value="">Choose one</option>
-            <option>Birthday</option><option>Kids' party</option><option>Baby shower</option>
-            <option>Christening</option><option>Wedding</option><option>Anniversary</option>
-            <option>Christmas</option><option>Business or event</option><option>Other</option>
-          </select>
-        </label>
-        <label for="date">Date needed <span class="req">*</span><input id="date" name="Date needed" type="date" required></label>
+        <label for="date">Collection or delivery date <span class="req">*</span><input id="date" name="Date needed" type="date" required></label>
+        <label for="time">Preferred time <span class="req">*</span><input id="time" name="Preferred time" type="time" required step="900"></label>
       </div>
       <p class="date-note" id="dateNote" aria-live="polite"></p>
-      <div class="row2">
-        <label for="what">What would you like? <span class="req">*</span>
-          <select id="what" name="Order" required>
-            <option value="">Choose one</option>
-            <option>4 inch cake (from &pound;55)</option>
-            <option>6 inch cake (from &pound;85)</option>
-            <option>8 inch cake (from &pound;100)</option>
-            <option>6 inch themed cake (from &pound;125)</option>
-            <option>8 inch themed cake (from &pound;145)</option>
-            <option>Box of 12 cupcakes (from &pound;35)</option>
-            <option>Cake and cupcakes</option>
-            <option>Not sure yet</option>
-          </select>
-        </label>
-        <label for="guests">Number of guests <span class="opt">(optional)</span><input id="guests" name="Guests" type="number" min="1" inputmode="numeric"></label>
-      </div>
-    </fieldset>
-
-    <fieldset>
-      <legend>The design</legend>
-      <label for="design">Theme, colours and ideas <span class="req">*</span><textarea id="design" name="Design ideas" required placeholder="For example: pink and gold, heart shape, piped roses, pearls"></textarea></label>
-      <div class="row2">
-        <label for="flavour">Flavour <span class="opt">(optional)</span><input id="flavour" name="Flavour" placeholder="Happy to discuss"></label>
-        <label for="msg">Message on the cake <span class="opt">(optional)</span><input id="msg" name="Message on cake" placeholder="e.g. Happy 30th Ryan"></label>
-      </div>
-      <div class="label">Inspiration photos <span class="opt">(optional, up to 2, max 5MB each)</span>
-        <input type="file" name="Inspiration photo 1" accept="image/*" aria-label="Inspiration photo 1">
-        <input type="file" name="Inspiration photo 2" accept="image/*" aria-label="Inspiration photo 2">
-        <span class="hint">Got more? Send them to me on Instagram.</span>
-      </div>
-      <label class="check"><input type="checkbox" name="Own toppers" value="Yes, I'll supply my own toppers or decorations"> I'd like to supply my own toppers or decorations</label>
-      <label for="allergies">Allergies or dietary needs <span class="opt">(optional)</span><input id="allergies" name="Allergies"></label>
-    </fieldset>
-
-    <fieldset>
-      <legend>Collection or delivery</legend>
       <div class="choices" role="radiogroup" aria-label="Collection or delivery">
         <label class="choice"><input type="radio" name="Collection or delivery" value="Collection" required> Collection</label>
         <label class="choice"><input type="radio" name="Collection or delivery" value="Delivery"> Delivery (arranged for you)</label>
@@ -171,18 +136,51 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     </fieldset>
 
     <fieldset>
+      <legend>Your cake</legend>
+      <label for="what">Cake size <span class="req">*</span>
+        <span class="hint">These are starting prices. All cakes include a buttercream finish in your chosen colour and a personalised acrylic topper. Extra details can be added after.</span>
+        <select id="what" name="Cake size" required>
+          <option value="">Choose one</option>
+          <option>4" tall (serves 2 to 5), from &pound;55</option>
+          <option>6" tall (serves 10 to 15), from &pound;85</option>
+          <option>8" tall (serves 20 to 25), from &pound;100</option>
+          <option>6" themed (serves 10 to 15), from &pound;125</option>
+          <option>8" themed (serves 20 to 25), from &pound;145</option>
+          <option>Box of 12 cupcakes, from &pound;35</option>
+          <option>Not sure yet</option>
+        </select>
+      </label>
+      <label for="flavour">Flavour <span class="req">*</span>
+        <span class="hint">On single tier cakes, flavours can't be mixed.</span>
+        <select id="flavour" name="Flavour" required>
+          <option value="">Choose one</option>
+          <option>Vanilla</option>
+          <option>Chocolate</option>
+          <option>Red velvet (+&pound;10)</option>
+          <option>Not sure yet, happy to discuss</option>
+        </select>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>The design</legend>
+      <label for="design">Design description <span class="req">*</span><textarea id="design" name="Design description" required placeholder="For example: pink with gold glitter, pretty piped borders"></textarea></label>
+      <label for="colours">Colour scheme <span class="req">*</span><input id="colours" name="Colour scheme" required placeholder="e.g. Pink and gold"></label>
+      <div class="row2">
+        <label for="msg">Text on your cake <span class="opt">(optional)</span><input id="msg" name="Text on cake" placeholder="e.g. Happy 30th Ryan"></label>
+        <label for="textColour">Text colour <span class="opt">(optional)</span><input id="textColour" name="Text colour" placeholder="e.g. Gold"></label>
+      </div>
+      <div class="label">Inspiration photos <span class="opt">(optional, up to 2, max 5MB each)</span>
+        <input type="file" name="Inspiration photo 1" accept="image/*" aria-label="Inspiration photo 1">
+        <input type="file" name="Inspiration photo 2" accept="image/*" aria-label="Inspiration photo 2">
+        <span class="hint">Got more? Send them to me on Instagram.</span>
+      </div>
+      <label class="check"><input type="checkbox" name="Own toppers" value="Yes, I'll supply my own toppers or decorations"> I'd like to supply my own toppers or decorations</label>
+      <label for="allergies">Any allergies? <span class="req">*</span><input id="allergies" name="Allergies" required placeholder="Write 'None' if not"></label>
+    </fieldset>
+
+    <fieldset>
       <legend>Anything else?</legend>
-      <label for="budget">Budget <span class="opt">(optional)</span>
-        <select id="budget" name="Budget">
-          <option value="">Prefer not to say</option>
-          <option>Under &pound;75</option><option>&pound;75 to &pound;100</option><option>&pound;100 to &pound;150</option><option>&pound;150 or more</option>
-        </select>
-      </label>
-      <label for="heard">How did you hear about me? <span class="opt">(optional)</span>
-        <select id="heard" name="Heard about me from">
-          <option value="">Choose one</option><option>Instagram</option><option>TikTok</option><option>A friend or family</option><option>I've ordered before</option><option>Other</option>
-        </select>
-      </label>
       <label for="notes">Anything else I should know? <span class="opt">(optional)</span><textarea id="notes" name="Other notes"></textarea></label>
     </fieldset>
 

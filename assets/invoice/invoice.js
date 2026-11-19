@@ -64,11 +64,12 @@
 
     const method = d.e?.method === "delivery" ? "Delivery" : "Collection";
     const chip = (label, v) => (v ? `<span class="chip"><small>${label}</small>${esc(v)}</span>` : "");
-    const chips = [chip("Occasion", d.e?.occ), chip("Size", d.k?.size), chip("Flavour", d.k?.flavour)].join("");
+    const chips = [chip("Occasion", d.e?.occ), chip("Size", d.k?.size), chip("Flavour", d.k?.flavour), chip("Colours", d.k?.colour)].join("");
     const row = (label, value) => (value ? `<dt>${esc(label)}</dt><dd>${esc(value)}</dd>` : "");
     const detailRows = [
       row("Design", d.k?.design),
-      row("On the cake", d.k?.msg),
+      row("On the cake", d.k?.msg ? d.k.msg + (d.k?.textColour ? ` (in ${d.k.textColour.toLowerCase()})` : "") : ""),
+      row("Allergies", d.k?.allergies),
       row(method, [fmtDate(d.e?.date), d.e?.time].filter(Boolean).join(", ")),
       d.e?.method === "delivery" ? row("Address", d.e?.addr) : ""
     ].join("");
@@ -94,6 +95,7 @@
       <img src="${esc(opts.logo || "assets/brand/wordmark-cream.png")}" alt="Cakes by Nashada Jones">
       <span class="ref">Order ${esc(d.n || "")}</span>
     </div>
+    <p class="conf">Order confirmation</p>
     <p class="hi">${first ? `Hi ${esc(first)}, let's make your cake!` : "Let's make your cake!"}</p>
     <p class="sub">Thank you for your order. Here's everything in one place.</p>
     ${d.e?.date ? `<div class="countdown">${days > 0 ? `<b>${days}</b> day${days === 1 ? "" : "s"} to cake day` : esc(cakeDayText)}</div>` : ""}

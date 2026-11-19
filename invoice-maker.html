@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Order Maker</title>
+<title>Order Confirmation Maker</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="icon" href="assets/brand/seal-brown.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -89,7 +89,7 @@ textarea { min-height: 84px; resize: vertical; }
 <body>
 <header class="bar">
   <div class="bar-in">
-    <div class="bar-left"><img src="assets/brand/monogram-cream.png" alt=""><h1>Order maker</h1></div>
+    <div class="bar-left"><img src="assets/brand/monogram-cream.png" alt=""><h1>Order confirmation</h1></div>
     <button class="btn btn--light" id="newBtn" type="button">New order</button>
   </div>
 </header>
@@ -134,7 +134,7 @@ textarea { min-height: 84px; resize: vertical; }
         <label>Size
           <select id="kSize">
             <option value="">Choose</option>
-            <option>4 inch</option><option>6 inch</option><option>8 inch</option>
+            <option>4 inch tall</option><option>6 inch tall</option><option>8 inch tall</option>
             <option>6 inch themed</option><option>8 inch themed</option>
             <option>Box of 12 cupcakes</option><option>Other</option>
           </select>
@@ -142,7 +142,12 @@ textarea { min-height: 84px; resize: vertical; }
       </div>
       <label>Flavour<input id="kFlavour" placeholder="e.g. Vanilla with strawberry jam"></label>
       <label>Design<textarea id="kDesign" placeholder="Colours, piping style, toppers, inspiration"></textarea></label>
-      <label>Message on cake<input id="kMsg" placeholder="e.g. Happy 30th Ryan"></label>
+      <label>Colour scheme<input id="kColour" placeholder="e.g. Pink and gold"></label>
+      <div class="row2">
+        <label>Text on cake<input id="kMsg" placeholder="e.g. Happy 30th Ryan"></label>
+        <label>Text colour<input id="kTextColour" placeholder="e.g. Gold"></label>
+      </div>
+      <label>Allergies<input id="kAllergies" placeholder="e.g. None"></label>
     </fieldset>
 
     <fieldset>
@@ -217,7 +222,7 @@ textarea { min-height: 84px; resize: vertical; }
 const PRICE_LIST = [
   { t: "4 inch cake", a: 55 }, { t: "6 inch cake", a: 85 }, { t: "8 inch cake", a: 100 },
   { t: "6 inch themed cake", a: 125 }, { t: "8 inch themed cake", a: 145 },
-  { t: "Box of 12 cupcakes", a: 35 }, { t: "Delivery", a: 0 }, { t: "Adding your own toppers", a: 0 }
+  { t: "Box of 12 cupcakes", a: 35 }, { t: "Red velvet flavour", a: 10 }, { t: "Delivery", a: 0 }, { t: "Adding your own toppers", a: 0 }
 ];
 const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThank you for choosing Cakes by Nashada Jones!";
 
@@ -247,7 +252,7 @@ const EXAMPLE = {
 const BLANK = () => ({ n: newNumber(), date: isoToday(), paid: "none", c: {}, e: { method: "collection" }, k: {}, items: [], dep: "", depDue: isoToday(3), balDue: "", notes: DEFAULT_NOTE });
 
 let items = [];
-const fields = { n: "n", date: "date", paid: "paid", cName: "c.name", cPhone: "c.phone", cEmail: "c.email", kTitle: "k.title", eOcc: "e.occ", kSize: "k.size", kFlavour: "k.flavour", kDesign: "k.design", kMsg: "k.msg", eDate: "e.date", eTime: "e.time", eAddr: "e.addr", dep: "dep", depDue: "depDue", balDue: "balDue", notes: "notes", bName: "bank.name", bSort: "bank.sort", bAcc: "bank.acc", bBank: "bank.bank" };
+const fields = { n: "n", date: "date", paid: "paid", cName: "c.name", cPhone: "c.phone", cEmail: "c.email", kTitle: "k.title", eOcc: "e.occ", kSize: "k.size", kFlavour: "k.flavour", kColour: "k.colour", kTextColour: "k.textColour", kAllergies: "k.allergies", kDesign: "k.design", kMsg: "k.msg", eDate: "e.date", eTime: "e.time", eAddr: "e.addr", dep: "dep", depDue: "depDue", balDue: "balDue", notes: "notes", bName: "bank.name", bSort: "bank.sort", bAcc: "bank.acc", bBank: "bank.bank" };
 const getPath = (o, p) => p.split(".").reduce((x, k) => (x ? x[k] : undefined), o);
 
 function load(d) {
@@ -312,7 +317,7 @@ NJInvoice.bind($("#preview"));
 // Link
 function makeLink() {
   const d = read(); delete d.example;
-  const base = (location.protocol.startsWith("http") ? location.origin : "") + "/invoice";
+  const base = (location.protocol.startsWith("http") ? location.origin : "") + "/order-confirmation";
   return { url: `${base}#d=${NJInvoice.encode(d)}`, d };
 }
 $("#makeLink").addEventListener("click", () => {
@@ -350,7 +355,10 @@ $("#tabPrev").addEventListener("click", () => setView("preview"));
 // Start: saved draft, or the example
 const bank = store.get("nj-bank") || {};
 $("#bName").value = bank.name || ""; $("#bSort").value = bank.sort || ""; $("#bAcc").value = bank.acc || ""; $("#bBank").value = bank.bank || "";
-load(store.get("nj-invoice-draft") || EXAMPLE);
+let fromLink = null;
+try { const m = location.hash.match(/d=([A-Za-z0-9_-]+)/); if (m) fromLink = NJInvoice.decode(m[1]); } catch (_) { fromLink = null; }
+if (fromLink) { delete fromLink.bank; if (!fromLink.n) fromLink.n = newNumber(); load(fromLink); $("#exampleNote").hidden = true; update(); history.replaceState(null, "", location.pathname); toast("Order loaded. Check it, then create the link."); }
+else load(store.get("nj-invoice-draft") || EXAMPLE);
 </script>
 </body>
 </html>
