@@ -62,6 +62,12 @@ h1 em, h2 em { font-family: var(--script); font-style: italic; font-weight: 400;
 
 /* Header */
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 31; background: var(--cream); }
+/* Christmas: announcement bar and falling snow */
+.xmas-bar { background: var(--cocoa); color: var(--latte-soft); text-align: center; font-size: .8rem; letter-spacing: .16em; text-transform: uppercase; padding: 11px max(20px, env(safe-area-inset-right, 0px)) 10px max(20px, env(safe-area-inset-left, 0px)); }
+.xmas-bar a { color: var(--white); text-underline-offset: 3px; margin-left: 6px; }
+.xmas-bar .flake { color: var(--latte); margin: 0 8px; }
+#snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
+@media (prefers-reduced-motion: reduce) { #snow { display: none; } }
 .site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(245,236,225,.94); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color .3s; }
 .site-header.scrolled { border-color: var(--line); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 72px; }
@@ -268,6 +274,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="arr" viewBox="0 0 12 12"><path d="M2.5 9.5 L9.5 2.5 M4 2.5 H9.5 V8" fill="none" stroke="currentColor" stroke-width="1.1"/></symbol></svg>
 
+<div class="xmas-bar" id="xmasBar" hidden><span class="flake" aria-hidden="true">&#10052;</span><span id="xmasText">Our Christmas designs are out Saturday 28th November</span><a href="#enquire">Enquire</a><span class="flake" aria-hidden="true">&#10052;</span></div>
+<canvas id="snow" aria-hidden="true"></canvas>
 <header class="site-header" id="header">
   <div class="wrap">
     <a href="#top" aria-label="Cakes by Nashada Jones, back to top"><img class="banner" src="assets/brand/wordmark-brown.png" alt="Cakes by Nashada Jones"></a>
@@ -658,6 +666,32 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: .15 });
   later.forEach((el) => io.observe(el));
 }
+
+// ---- Christmas: banner and snow. Shown from now until 26 December. ----
+(function () {
+  const now = new Date(), y = now.getFullYear();
+  const launch = new Date(2026, 10, 28), end = new Date(y, 11, 27);
+  if (now >= end || now < new Date(2026, 10, 1)) { document.getElementById("snow").remove(); return; }
+  const bar = document.getElementById("xmasBar"); bar.hidden = false;
+  if (now >= launch) document.getElementById("xmasText").textContent = "Our Christmas designs are out now";
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.getElementById("snow"), ctx = c.getContext("2d");
+  let w, h, flakes = [];
+  const size = () => { const r = devicePixelRatio || 1; w = innerWidth; h = innerHeight; c.width = w * r; c.height = h * r; ctx.setTransform(r, 0, 0, r, 0, 0); };
+  size(); addEventListener("resize", size);
+  const count = Math.round(Math.min(70, w / 18));
+  for (let i = 0; i < count; i++) flakes.push({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 2.6, s: .3 + Math.random() * .8, d: Math.random() * 6.28 });
+  (function tick() {
+    ctx.clearRect(0, 0, w, h);
+    for (const f of flakes) {
+      f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .4;
+      if (f.y > h + 5) { f.y = -5; f.x = Math.random() * w; }
+      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.28);
+      ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.shadowColor = "rgba(107,68,51,.35)"; ctx.shadowBlur = 3; ctx.fill();
+    }
+    requestAnimationFrame(tick);
+  })();
+})();
 </script>
 </body>
 </html>
