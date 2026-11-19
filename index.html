@@ -189,7 +189,20 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .tool { background: var(--white); padding: clamp(26px, 4vw, 44px); display: grid; gap: 18px; align-content: start; min-width: 0; }
 .tool label { font-size: .74rem; letter-spacing: .26em; text-transform: uppercase; font-weight: 400; color: var(--muted); }
-.tool input[type="date"] { font: 400 1.05rem var(--body); padding: 14px 16px; border: 1px solid var(--line); border-radius: 0; background: var(--white); color: var(--cocoa); width: 100%; }
+.date-wrap { position: relative; min-width: 0; }
+.tool input[type="date"] { -webkit-appearance: none; appearance: none; display: block; box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; height: 54px; margin: 0;
+  font: 400 1.05rem/1.2 var(--body); padding: 0 16px; border: 1px solid var(--line); border-radius: 2px; background: var(--cream); color: var(--cocoa); text-align: left; color-scheme: dark; }
+.tool input[type="date"]::-webkit-date-and-time-value { text-align: left; margin: 0; }
+.tool input[type="date"]::-webkit-calendar-picker-indicator { opacity: .7; cursor: pointer; }
+.tool input[type="date"]:focus { outline: none; border-color: var(--latte); }
+.date-hint { position: absolute; left: 17px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--muted); font-size: 1rem; }
+.date-hint { display: none; }
+@supports selector(::-webkit-datetime-edit) {
+  .date-hint { display: block; }
+  .date-wrap:not(.has-value) input[type="date"]:not(:focus)::-webkit-datetime-edit { color: transparent; }
+  .date-wrap:focus-within .date-hint { display: none; }
+}
+.date-wrap.has-value .date-hint { display: none !important; }
 .tool input[type="range"] { width: 100%; accent-color: var(--accent); }
 .guests { font-family: var(--display); font-size: 3.2rem; line-height: 1; }
 .guests small { font-family: var(--body); font-size: .85rem; letter-spacing: .14em; margin-left: 8px; color: var(--muted); }
@@ -387,7 +400,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
       <div class="tools">
         <div class="tool">
           <label for="eventDate">When is your celebration?</label>
-          <input type="date" id="eventDate">
+          <div class="date-wrap" id="dateWrap"><input type="date" id="eventDate" aria-label="Celebration date"><span class="date-hint">Tap to choose a date</span></div>
           <div class="result" id="dateResult" aria-live="polite">
             <b>Pick a date</b>
             <p>I'll let you know if there's enough time. I like about 2 weeks' notice.</p>
@@ -633,7 +646,10 @@ $("#quoteText").textContent = REVIEWS[0].text; $("#quoteWho").textContent = REVI
 const dateIn = $("#eventDate");
 const today = new Date(); today.setHours(0, 0, 0, 0);
 dateIn.min = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+const markDate = () => document.getElementById("dateWrap").classList.toggle("has-value", !!dateIn.value);
+dateIn.addEventListener("input", markDate);
 dateIn.addEventListener("change", () => {
+  markDate();
   if (!dateIn.value) return;
   const [y, m, d] = dateIn.value.split("-").map(Number);
   const days = Math.round((new Date(y, m - 1, d) - today) / 86400000);
