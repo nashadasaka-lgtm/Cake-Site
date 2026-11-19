@@ -315,21 +315,21 @@ $("#form").addEventListener("submit", (e) => e.preventDefault());
 NJInvoice.bind($("#preview"));
 
 // Link
-function makeLink() {
+async function makeLink() {
   const d = read(); delete d.example;
   const base = (location.protocol.startsWith("http") ? location.origin : "") + "/order-confirmation";
-  return { url: `${base}#d=${NJInvoice.encode(d)}`, d };
+  return { url: `${base}#o=${await NJInvoice.pack(d)}`, d };
 }
-$("#makeLink").addEventListener("click", () => {
+$("#makeLink").addEventListener("click", async () => {
   const d0 = read();
   if (!d0.bank.sort || !d0.bank.acc) toast("Tip: add your bank details so the customer can pay.");
-  const { url, d } = makeLink();
+  const { url, d } = await makeLink();
   if ($("#exampleNote").hidden) noteNumber(d.n);
   const first = (d.c.name || "").split(/\s+/)[0];
-  const msg = `Hi${first ? " " + first : ""}, here are your cake order details from Cakes by Nashada Jones, including how to secure your date: ${url}`;
+  const msg = `Hi${first ? " " + first : ""}, here's your order confirmation from Cakes by Nashada Jones: ${url}`;
   $("#linkBox").textContent = url;
   $("#waLink").href = "https://wa.me/?text=" + encodeURIComponent(msg);
-  $("#mailLink").href = `mailto:${encodeURIComponent(d.c.email || "")}?subject=${encodeURIComponent("Your cake order " + d.n + " from Cakes by Nashada Jones")}&body=${encodeURIComponent(msg)}`;
+  $("#mailLink").href = `mailto:${encodeURIComponent(d.c.email || "")}?subject=${encodeURIComponent("Your order confirmation " + d.n + " from Cakes by Nashada Jones")}&body=${encodeURIComponent(msg)}`;
   $("#openLink").href = url;
   $("#linkOut").hidden = false;
 });
@@ -356,9 +356,11 @@ $("#tabPrev").addEventListener("click", () => setView("preview"));
 const bank = store.get("nj-bank") || {};
 $("#bName").value = bank.name || ""; $("#bSort").value = bank.sort || ""; $("#bAcc").value = bank.acc || ""; $("#bBank").value = bank.bank || "";
 let fromLink = null;
-try { const m = location.hash.match(/d=([A-Za-z0-9_-]+)/); if (m) fromLink = NJInvoice.decode(m[1]); } catch (_) { fromLink = null; }
-if (fromLink) { delete fromLink.bank; if (!fromLink.n) fromLink.n = newNumber(); load(fromLink); $("#exampleNote").hidden = true; update(); history.replaceState(null, "", location.pathname); toast("Order loaded. Check it, then create the link."); }
-else load(store.get("nj-invoice-draft") || EXAMPLE);
+(async () => {
+  try { fromLink = await NJInvoice.fromHash(location.hash); } catch (_) { fromLink = null; }
+  if (fromLink) { delete fromLink.bank; if (!fromLink.n) fromLink.n = newNumber(); load(fromLink); $("#exampleNote").hidden = true; update(); history.replaceState(null, "", location.pathname); toast("Order loaded. Check it, then create the link."); }
+  else load(store.get("nj-invoice-draft") || EXAMPLE);
+})();
 </script>
 </body>
 </html>

@@ -24,15 +24,17 @@
 <script src="assets/invoice/invoice.js"></script>
 <script>
   const app = document.getElementById("app");
-  let data = null;
-  try { const m = location.hash.match(/d=([A-Za-z0-9_-]+)/); if (m) data = NJInvoice.decode(m[1]); } catch (_) { data = null; }
-  if (data) {
-    app.innerHTML = NJInvoice.render(data, { printButton: true });
-    document.title = `Order confirmation ${data.n || ""} · Cakes by Nashada Jones`;
-    NJInvoice.bind(app);
-  } else {
-    app.innerHTML = `<div class="empty"><img src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"><h1>Order not found</h1><p>This link looks incomplete. Please check you copied the whole link, or message me and I'll send it again.</p></div>`;
-  }
+  (async () => {
+    let data = null;
+    try { data = await NJInvoice.fromHash(location.hash); } catch (_) { data = null; }
+    if (data) {
+      app.innerHTML = NJInvoice.render(data, { printButton: true });
+      document.title = `Order confirmation ${data.n || ""} · Cakes by Nashada Jones`;
+      NJInvoice.bind(app);
+    } else {
+      app.innerHTML = `<div class="empty"><img src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones"><h1>Order not found</h1><p>This link looks incomplete. Please check you copied the whole link, or message me and I'll send it again.</p></div>`;
+    }
+  })();
 </script>
 </body>
 </html>

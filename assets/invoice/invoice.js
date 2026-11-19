@@ -20,6 +20,51 @@
     return JSON.parse(new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0))));
   }
 
+  // ---- Short links: details are packed into a list and compressed ----
+  const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThank you for choosing Cakes by Nashada Jones!";
+  const PATHS = ["n", "date", "paid", "c.name", "c.phone", "c.email", "e.occ", "e.date", "e.time", "e.method", "e.addr",
+    "k.title", "k.size", "k.flavour", "k.colour", "k.design", "k.msg", "k.textColour", "k.allergies",
+    "dep", "depDue", "balDue", "notes", "bank.name", "bank.sort", "bank.acc", "bank.bank", "items"];
+  const get = (o, p) => p.split(".").reduce((x, k) => (x == null ? undefined : x[k]), o);
+  const b64 = (bytes) => { let bin = ""; bytes.forEach((b) => (bin += String.fromCharCode(b))); return btoa(bin).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, ""); };
+  const unb64 = (str) => { const s = str.replace(/-/g, "+").replace(/_/g, "/"); return Uint8Array.from(atob(s + "===".slice((s.length + 3) % 4)), (c) => c.charCodeAt(0)); };
+  async function pipe(bytes, stream) { return new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer()); }
+  async function pack(d) {
+    const arr = PATHS.map((p) => {
+      let v = get(d, p);
+      if (p === "notes" && v === DEFAULT_NOTE) return 1;
+      if (p === "paid") return { none: 0, deposit: 1, full: 2 }[v] || 0;
+      if (p === "e.method") return v === "delivery" ? 1 : 0;
+      if (p === "items") return (v || []).filter((i) => i.t || i.a).map((i) => [i.t || "", +i.a || 0]);
+      if (/date|Due$/i.test(p) && typeof v === "string") return v.replace(/-/g, "").slice(2);
+      return v == null ? "" : v;
+    });
+    const bytes = new TextEncoder().encode(JSON.stringify(arr));
+    return b64(await pipe(bytes, new CompressionStream("deflate-raw")));
+  }
+  async function unpack(token) {
+    const arr = JSON.parse(new TextDecoder().decode(await pipe(unb64(token), new DecompressionStream("deflate-raw"))));
+    const d = {};
+    PATHS.forEach((p, i) => {
+      let v = arr[i];
+      if (p === "notes") v = v === 1 ? DEFAULT_NOTE : v;
+      else if (p === "paid") v = ["none", "deposit", "full"][v] || "none";
+      else if (p === "e.method") v = v ? "delivery" : "collection";
+      else if (p === "items") v = (v || []).map(([t, a]) => ({ t, a }));
+      else if (/date|Due$/i.test(p) && /^\d{6}$/.test(v || "")) v = `20${v.slice(0, 2)}-${v.slice(2, 4)}-${v.slice(4, 6)}`;
+      const keys = p.split("."); let o = d;
+      keys.slice(0, -1).forEach((k) => (o = o[k] = o[k] || {}));
+      o[keys[keys.length - 1]] = v;
+    });
+    return d;
+  }
+  // Reads either the new short link (#o=) or an older long link (#d=)
+  async function fromHash(hash) {
+    let m = /[#&]o=([A-Za-z0-9_-]+)/.exec(hash); if (m) return unpack(m[1]);
+    m = /[#&]d=([A-Za-z0-9_-]+)/.exec(hash); if (m) return decode(m[1]);
+    return null;
+  }
+
   function totals(d) {
     const total = (d.items || []).reduce((s, i) => s + num(i.a), 0);
     let dep = num(d.dep);
@@ -172,5 +217,5 @@
     });
   }
 
-  window.NJInvoice = { render, bind, encode, decode, money, totals, fmtDate };
+  window.NJInvoice = { render, bind, encode, decode, pack, unpack, fromHash, money, totals, fmtDate };
 })();
