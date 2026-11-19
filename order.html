@@ -63,6 +63,9 @@ input[type="file"]::file-selector-button { font: 400 .72rem var(--body); letter-
 .check { display: flex; flex-wrap: nowrap; gap: 12px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--text); cursor: pointer; }
 .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; flex: none; }
 label > input, label > select, label > textarea, label > .hint, .label > input, .label > .hint { flex: 0 0 100%; }
+.deliv-note { border-left: 2px solid var(--latte); background: rgba(204,179,149,.08); padding: 14px 16px; display: grid; gap: 4px; }
+.deliv-note b { font-weight: 400; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--latte); }
+.deliv-note p { margin: 0; font-size: .92rem; color: var(--text); }
 .hint { font-size: .85rem; color: var(--muted); text-transform: none; letter-spacing: 0; }
 .date-note { font-size: .9rem; text-transform: none; letter-spacing: 0; color: var(--latte); min-height: 1.4em; }
 .honey { position: absolute; left: -9999px; }
@@ -130,7 +133,12 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
       <p class="date-note" id="dateNote" aria-live="polite"></p>
       <div class="choices" role="radiogroup" aria-label="Collection or delivery">
         <label class="choice"><input type="radio" name="Collection or delivery" value="Collection" required> Collection</label>
-        <label class="choice"><input type="radio" name="Collection or delivery" value="Delivery"> Delivery (arranged for you)</label>
+        <label class="choice"><input type="radio" name="Collection or delivery" value="Delivery"> Delivery (by a courier)</label>
+      </div>
+      <p class="hint" style="margin:0">Delivery is by an external courier, not by me directly. Delivery costs aren't included in the cake price. We'll talk through the details and cost by Instagram DM or email.</p>
+      <div class="deliv-note" id="delivNote" hidden>
+        <b>About delivery</b>
+        <p>I use a trusted external delivery company. Once I've received your enquiry, I'll message you on Instagram or email to arrange it and confirm the cost.</p>
       </div>
       <label for="postcode" id="postcodeWrap" hidden>Delivery postcode <span class="req">*</span><input id="postcode" name="Delivery postcode" autocomplete="postal-code"></label>
     </fieldset>
@@ -215,7 +223,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   // Delivery postcode only when delivery is chosen
   document.querySelectorAll('input[name="Collection or delivery"]').forEach((r) => r.addEventListener("change", () => {
     const del = r.value === "Delivery" && r.checked;
-    $("#postcodeWrap").hidden = !del; $("#postcode").required = del;
+    $("#postcodeWrap").hidden = !del; $("#postcode").required = del; $("#delivNote").hidden = !del;
   }));
 
   // Photos: keep them under 5MB
