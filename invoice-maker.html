@@ -166,10 +166,11 @@ textarea { min-height: 84px; resize: vertical; }
       <button class="btn btn--line add-line" type="button" id="addLine">Add a line</button>
       <div class="sum"><span>Total</span><span id="sumTotal">&pound;0</span></div>
       <div class="row2">
-        <label>Deposit (&pound;)<input id="dep" type="number" min="0" step="0.01" inputmode="decimal"></label>
+        <label>50% deposit (&pound;)<input id="dep" type="number" min="0" step="0.01" inputmode="decimal"></label>
         <label>Deposit due by<input id="depDue" type="date"></label>
       </div>
-      <div class="dep-quick"><button class="chip" type="button" data-pct="30">30% deposit</button><button class="chip" type="button" data-pct="50">50% deposit</button><button class="chip" type="button" data-pct="0">No deposit</button></div>
+      <p class="legend-note" id="depNote">The deposit is always 50% of the total, worked out for you.</p>
+      <div class="dep-quick" id="depReset" hidden><button class="chip" type="button" data-pct="50">Go back to 50%</button></div>
       <label>Balance due by<input id="balDue" type="date"></label>
     </fieldset>
 
@@ -218,7 +219,7 @@ const PRICE_LIST = [
   { t: "6 inch themed cake", a: 125 }, { t: "8 inch themed cake", a: 145 },
   { t: "Box of 12 cupcakes", a: 35 }, { t: "Delivery", a: 0 }, { t: "Adding your own toppers", a: 0 }
 ];
-const DEFAULT_NOTE = "Your date is booked once your deposit is received. Thank you for choosing Cakes by Nashada Jones!";
+const DEFAULT_NOTE = "A 50% non-refundable deposit is needed to secure your date. The deposit is only refunded if I cancel your order, or if nothing has been bought for your cake yet when you cancel.\n\nThank you for choosing Cakes by Nashada Jones!";
 
 const $ = (s) => document.querySelector(s);
 const store = {
@@ -236,7 +237,7 @@ const EXAMPLE = {
   e: { occ: "30th birthday", date: isoToday(24), time: "2pm", method: "collection", addr: "" },
   k: { title: "Cream bows, Still not thirty", size: "6 inch", flavour: "Vanilla with raspberry jam", design: "Cream buttercream with piped shells, black ribbon bows all around", msg: "Still not thirty" },
   items: [{ t: "6 inch cake", a: 85 }, { t: "Black ribbon bows", a: 10 }],
-  dep: 47.5, depDue: isoToday(3), balDue: isoToday(17),
+  dep: "", depDue: isoToday(3), balDue: isoToday(17),
   notes: DEFAULT_NOTE, example: true
 };
 const BLANK = () => ({ n: newNumber(), date: isoToday(), paid: "none", c: {}, e: { method: "collection" }, k: {}, items: [], dep: "", depDue: isoToday(3), balDue: "", notes: DEFAULT_NOTE });
@@ -249,6 +250,8 @@ function load(d) {
   for (const [id, path] of Object.entries(fields)) { const v = getPath(d, path); if (!path.startsWith("bank.")) $("#" + id).value = v ?? ""; }
   (d.e?.method === "delivery" ? $("#mDel") : $("#mCol")).checked = true;
   items = (d.items || []).map((i) => ({ ...i }));
+  const half = Math.round(itemsTotal() * 50) / 100;
+  depAuto = !d.dep || Math.abs(parseFloat(d.dep) - half) < 0.01;
   $("#exampleNote").hidden = !d.example;
   drawItems(); update();
 }
@@ -278,13 +281,16 @@ $("#items").addEventListener("click", (e) => { const b = e.target.closest("[data
 $("#addLine").addEventListener("click", () => { items.push({ t: "", a: "" }); drawItems(); $("#items").lastElementChild.querySelector("input").focus(); });
 $("#quick").innerHTML = PRICE_LIST.map((p, i) => `<button type="button" class="chip" data-q="${i}">${p.t}${p.a ? `<span>&pound;${p.a}</span>` : ""}</button>`).join("");
 $("#quick").addEventListener("click", (e) => { const b = e.target.closest("[data-q]"); if (!b) return; const p = PRICE_LIST[b.dataset.q]; items.push({ t: p.t, a: p.a || "" }); drawItems(); update(); });
-document.querySelectorAll("[data-pct]").forEach((b) => b.addEventListener("click", () => {
-  const { total } = NJInvoice.totals(read());
-  const pct = +b.dataset.pct; $("#dep").value = pct ? Math.round(total * pct) / 100 : "";
-  update();
-}));
+// Deposit: always 50% unless you type a different amount
+let depAuto = true;
+const itemsTotal = () => items.reduce((s, i) => s + (parseFloat(i.a) || 0), 0);
+document.querySelectorAll("[data-pct]").forEach((b) => b.addEventListener("click", () => { depAuto = true; update(); }));
+$("#dep").addEventListener("input", () => { depAuto = false; });
 
 function update() {
+  if (depAuto) { const t = itemsTotal(); $("#dep").value = t ? Math.round(t * 50) / 100 : ""; }
+  $("#depReset").hidden = depAuto;
+  $("#depNote").textContent = depAuto ? "The deposit is always 50% of the total, worked out for you." : "You changed the deposit by hand.";
   const d = read();
   $("#addrWrap").hidden = d.e.method !== "delivery";
   $("#sumTotal").textContent = NJInvoice.money(NJInvoice.totals(d).total);

@@ -103,7 +103,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* Find your occasion */
 .row-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; margin-bottom: clamp(36px, 5vw, 52px); }
 .row-head .head { margin-bottom: 0; }
-.occ-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.occ-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
 .occ { display: grid; gap: 14px; text-decoration: none; border: 0; padding: 0; background: none; text-align: left; }
 .pic { aspect-ratio: 4 / 5; overflow: hidden; background: var(--latte-soft); display: grid; place-items: center; }
 .pic img { width: 100%; height: 100%; object-fit: cover; transition: transform .7s ease; }
@@ -425,7 +425,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <details><summary>Is there a minimum order for cupcakes?</summary><div class="answer">Yes. Cupcakes come in boxes of 12, which is the minimum order. A box starts from &pound;35.</div></details>
         <details><summary>Do you deliver?</summary><div class="answer">Yes. You can collect your cake, or I can arrange delivery for you through a delivery company. Delivery costs are confirmed when you order.</div></details>
         <details><summary>Can I order through this website?</summary><div class="answer">Not directly. This site is a look book of my work. To order, send me a DM on Instagram or fill in my order form, and I'll take it from there.</div></details>
-        <details><summary>How do I secure my date?</summary><div class="answer">Once we've agreed your design, I'll send you an invoice. Your date is booked once your deposit is received.</div></details>
+        <details><summary>How do I secure my date?</summary><div class="answer">Once we've agreed your design, I'll send you an invoice. Your date is booked once your 50% deposit is received.</div></details>
+        <details><summary>What if I need to cancel?</summary><div class="answer">The 50% deposit is non-refundable. It is only refunded if I cancel your order, or if nothing has been bought for your cake yet when you cancel.</div></details>
       </div>
     </div>
   </section>
@@ -439,7 +440,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
         <a class="btn btn--light" data-link="instagram" href="#" target="_blank" rel="noopener">Message me on Instagram <svg class="arr"><use href="#arr"/></svg></a>
         <a class="btn btn--light" data-link="form" href="#" target="_blank" rel="noopener">Fill in the order form <svg class="arr"><use href="#arr"/></svg></a>
       </div>
-      <p class="cta-email">Or email me at <a href="mailto:cakesbynashadajones@outlook.com">cakesbynashadajones@outlook.com</a></p>
+      <p class="cta-email">Or email me at <a href="mailto:njcakeacademy@outlook.com">njcakeacademy@outlook.com</a></p>
     </div>
   </section>
 </main>
@@ -452,7 +453,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </nav>
     <div class="foot-contact">
       <a href="https://www.instagram.com/cakesbynashadajones" target="_blank" rel="noopener">Instagram</a>
-      <a href="mailto:cakesbynashadajones@outlook.com">cakesbynashadajones@outlook.com</a>
+      <a href="mailto:njcakeacademy@outlook.com">njcakeacademy@outlook.com</a>
       <span>&copy; <span id="year">2026</span> Cakes by Nashada Jones</span>
     </div>
   </div>
@@ -475,28 +476,46 @@ const LINKS = {
 const OCCASIONS = [
   { tag: "birthday", name: "Birthdays", line: "Another year, another slice" },
   { tag: "kids", name: "Kids' parties", line: "Their favourite things, in cake" },
-  { tag: "cupcakes", name: "Cupcakes", line: "Boxes for sharing" },
-  { tag: "celebration", name: "Celebrations", line: "Launches, milestones and more" }
+  { tag: "baby", name: "Baby showers", line: "Welcoming someone new" },
+  { tag: "celebration", name: "Celebrations", line: "Christenings, Friendsmas and more" },
+  { tag: "cupcakes", name: "Cupcakes", line: "Boxes of 12 for sharing" },
+  { tag: "business", name: "Business and events", line: "Your logo or brand, on cupcakes" }
 ];
 
 // ---- Your cakes. Add a new line for each photo. ----
-// tag: birthday, kids, cupcakes, celebration, baby, wedding, anniversary
-// favourite: true puts the cake in the swipeable "favourites" row
+// tag: birthday, kids, baby, celebration, cupcakes, business, wedding, anniversary
+// The first cake with each tag is the photo on that occasion card.
 const CAKES = [
-  { img: "assets/cakes/pearls-and-pressed-flowers.jpg", title: "Pearls and pressed flowers", tag: "birthday", favourite: true, alt: "Heart cake with coral piping, pearls, pink ribbons and dried flowers" },
-  { img: "assets/cakes/still-not-thirty.jpg", title: "Still not thirty", tag: "birthday", favourite: true, alt: "Tall cream cake with piped shells and black ribbon bows" },
-  { img: "assets/cakes/twenty-one-pink-heart.jpg", title: "Twenty one in pink", tag: "birthday", favourite: true, alt: "Pink heart cake with shimmer, piped border and a silver crown" },
-  { img: "assets/cakes/birthday-girl-heart.jpg", title: "Birthday girl", tag: "birthday", favourite: true, alt: "White heart cake with black piped border and gold topper" },
-  { img: "assets/cakes/blossom-23.jpg", title: "Blossom 23", tag: "birthday", favourite: true, alt: "Cream cake with blossom flowers, gold butterflies and a pink 23 topper" },
-  { img: "assets/cakes/black-and-gold-30th.jpg", title: "Black and gold 30th", tag: "birthday", favourite: true, alt: "Tall black buttercream cake with gold topper, gold spheres and a toy motorbike" },
-  { img: "assets/cakes/bows-for-bae.jpg", title: "Bows for bae", tag: "birthday", favourite: true, alt: "Cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/pearls-and-pressed-flowers.jpg", title: "Pearls and pressed flowers", tag: "birthday", alt: "Heart cake with coral piping, pearls, pink ribbons and dried flowers" },
+  { img: "assets/cakes/red-roses-and-gold-60th.jpg", title: "Red roses and gold 60th", tag: "birthday", alt: "Two-tier white and gold cake with deep red roses and a gold 60 topper" },
+  { img: "assets/cakes/still-not-thirty.jpg", title: "Still not thirty", tag: "birthday", alt: "Tall cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/twenty-one-pink-heart.jpg", title: "Twenty one in pink", tag: "birthday", alt: "Pink heart cake with shimmer, piped border and a silver crown" },
+  { img: "assets/cakes/birthday-girl-heart.jpg", title: "Birthday girl", tag: "birthday", alt: "White heart cake with black piped border and gold topper" },
+  { img: "assets/cakes/blossom-23.jpg", title: "Blossom 23", tag: "birthday", alt: "Cream cake with blossom flowers, gold butterflies and a pink 23 topper" },
+  { img: "assets/cakes/sprinkle-sponge-23.jpg", title: "Sprinkle sponge 23", tag: "birthday", alt: "Tall white drip cake topped with sprinkle sponge pieces and a gold 23" },
+  { img: "assets/cakes/black-and-gold-30th.jpg", title: "Black and gold 30th", tag: "birthday", alt: "Tall black buttercream cake with gold topper, gold spheres and a toy motorbike" },
+  { img: "assets/cakes/bows-for-bae.jpg", title: "Bows for bae", tag: "birthday", alt: "Cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/hello-kitty-heart.jpg", title: "Hello Kitty heart", tag: "kids", alt: "Pink heart cake with Hello Kitty, piped roses, pearls and ribbons" },
+  { img: "assets/cakes/pink-and-mint-stitch.jpg", title: "Pink and mint Stitch", tag: "kids", alt: "Tall pink and mint cake with Stitch toppers and piped roses" },
+  { img: "assets/cakes/mermaid-fourth-birthday.jpg", title: "Mermaid fourth birthday", tag: "kids", alt: "Pink ridged cake with a mermaid topper, shells and sand crumbs" },
   { img: "assets/cakes/football-stars.jpg", title: "Football stars", tag: "kids", alt: "White and red cake with black stars and footballs" },
   { img: "assets/cakes/mickey-first-birthday.jpg", title: "Mickey first birthday", tag: "kids", alt: "Red and cream first birthday cake with a Mickey Mouse theme" },
   { img: "assets/cakes/peppa-third-birthday.jpg", title: "Peppa third birthday", tag: "kids", alt: "Pink marbled cake with Peppa Pig toppers, daisies and pastel spheres" },
   { img: "assets/cakes/arsenal-birthday.jpg", title: "Arsenal birthday", tag: "kids", alt: "Red and cream football club birthday cake with gold details" },
+  { img: "assets/cakes/baby-bear-and-gold.jpg", title: "Baby bear and gold", tag: "baby", alt: "Pale yellow cake with a teddy bear, clouds, gold spheres and gold leaf" },
+  { img: "assets/cakes/pregnancy-bento-box.jpg", title: "Pregnancy announcement box", tag: "baby", alt: "Small cream cake with a funny pregnancy drawing, with matching cupcakes" },
+  { img: "assets/cakes/christening-blue-and-gold.jpg", title: "Blue and gold christening", tag: "celebration", alt: "Blue and cream cake with a gold cross, gold spheres and pampas" },
+  { img: "assets/cakes/friendsmas-red-bows.jpg", title: "Friendsmas red bows", tag: "celebration", alt: "Cream cake with piped shells and red ribbon bows" },
+  { img: "assets/cakes/pink-petal-cupcakes.jpg", title: "Pink petal cupcakes", tag: "cupcakes", alt: "Pink and cream cupcakes with dried flowers and pearls" },
+  { img: "assets/cakes/peach-and-gold-cupcakes.jpg", title: "Peach and gold cupcakes", tag: "cupcakes", alt: "Peach, pink and cream piped cupcakes with gold pearls" },
+  { img: "assets/cakes/chocolate-and-gold-cupcakes.jpg", title: "Chocolate and gold", tag: "cupcakes", alt: "Chocolate and coffee rose cupcakes with gold pearls" },
+  { img: "assets/cakes/pink-and-cream-rose-cupcakes.jpg", title: "Pink and cream roses", tag: "cupcakes", alt: "Pink and cream rose-piped cupcakes" },
   { img: "assets/cakes/pink-rose-cupcakes.jpg", title: "Pink rose cupcakes", tag: "cupcakes", alt: "Box of pink rose-piped cupcakes with pearls, gold leaf and Happy Birthday toppers" },
   { img: "assets/cakes/pink-rose-cupcakes-boxes.jpg", title: "Two boxes of roses", tag: "cupcakes", alt: "Two boxes of pink rose cupcakes with gold number 3 toppers" },
-  { img: "assets/cakes/book-launch-cupcakes.jpg", title: "Book launch cupcakes", tag: "celebration", alt: "Vanilla cupcakes with cookie pieces, gold pearls and printed book cover toppers" }
+  { img: "assets/cakes/power-her-cupcakes.jpg", title: "Power Her event cupcakes", tag: "business", alt: "Pink and cream cupcakes with printed Power Her logo toppers" },
+  { img: "assets/cakes/mountain-movers-cupcakes.jpg", title: "Mountain Movers logo cupcakes", tag: "business", alt: "Cupcakes with printed Mountain Movers logo toppers" },
+  { img: "assets/cakes/games-night-cupcakes.jpg", title: "Games night cupcakes", tag: "business", alt: "Blue and cream cupcakes with printed games night logo toppers" },
+  { img: "assets/cakes/book-launch-cupcakes.jpg", title: "Book launch cupcakes", tag: "business", alt: "Vanilla cupcakes with cookie pieces, gold pearls and printed book cover toppers" }
 ];
 
 // ---- Your reviews. ----
@@ -506,7 +525,7 @@ const REVIEWS = [
   { text: "And one more here.", who: "Client name, occasion" }
 ];
 
-const TAG_NAMES = { birthday: "Birthday", kids: "Kids", cupcakes: "Cupcakes", celebration: "Celebration", baby: "Baby shower", wedding: "Wedding", anniversary: "Anniversary" };
+const TAG_NAMES = { birthday: "Birthday", kids: "Kids", cupcakes: "Cupcakes", celebration: "Celebration", business: "Business", baby: "Baby shower", wedding: "Wedding", anniversary: "Anniversary" };
 const TAB_NAMES = { birthday: "Birthdays", kids: "Kids", cupcakes: "Cupcakes", celebration: "Celebrations", baby: "Baby showers", wedding: "Weddings", anniversary: "Anniversaries" };
 const $ = (s) => document.querySelector(s);
 const toast = (msg) => { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove("show"), 2600); };
