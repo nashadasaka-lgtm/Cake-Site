@@ -233,6 +233,15 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .step p { color: var(--muted); }
 @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
 
+/* Happy customers */
+.happy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+.happy { margin: 0; display: grid; gap: 12px; }
+.happy img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; object-position: center 30%; }
+.happy figcaption { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.happy figcaption b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; }
+.happy figcaption span { font-size: .7rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+@media (max-width: 560px) { .happy-grid { grid-template-columns: 1fr 1fr; gap: 12px; } .happy figcaption { flex-direction: column; gap: 0; } .happy figcaption b { font-size: 1.1rem; } }
+
 /* Reviews: one at a time */
 .quote-box { max-width: 760px; margin: 0 auto; text-align: center; display: grid; gap: 26px; justify-items: center; }
 .quote-box blockquote { margin: 0; font-family: var(--script); font-style: italic; font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.4; min-height: 3em; transition: opacity .35s; }
@@ -435,6 +444,20 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     </div>
   </section>
 
+  <section class="section" id="customers">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Happy customers</p>
+        <h2>Cakes at the <em>party.</em></h2>
+        <p>Real celebrations with my cakes. Tag me on Instagram and you could be next!</p>
+      </div>
+      <div class="happy-grid">
+        <figure class="happy"><img src="assets/cakes/customer-jasmine-24th.jpg" alt="A happy customer at her 24th birthday dinner holding a cream cake with pink roses and butterflies" loading="lazy"><figcaption><b>Jasmine's 24th</b><span>Birthday dinner</span></figcaption></figure>
+        <figure class="happy"><img src="assets/cakes/customer-janet-25th.jpg" alt="A happy customer at her 25th birthday holding a tall blue ridged cake with pampas and a gold 25" loading="lazy"><figcaption><b>Janet's 25th</b><span>Birthday party</span></figcaption></figure>
+      </div>
+    </div>
+  </section>
+
   <section class="section section--soft" id="reviews">
     <div class="wrap">
       <div class="quote-box">
@@ -488,7 +511,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   <div class="wrap">
     <img src="assets/brand/wordmark-cream.png" alt="Cakes by Nashada Jones">
     <nav aria-label="Footer">
-      <a href="#occasions">Cakes</a><a href="#prices">Prices</a><a href="#plan">Plan</a><a href="#faq">FAQ</a><a href="#enquire">Enquire</a>
+      <a href="#occasions">Cakes</a><a href="#customers">Customers</a><a href="#prices">Prices</a><a href="#plan">Plan</a><a href="#faq">FAQ</a><a href="#enquire">Enquire</a>
     </nav>
     <div class="foot-contact">
       <a href="https://www.instagram.com/cakesbynashadajones" target="_blank" rel="noopener">Instagram</a>
@@ -515,8 +538,8 @@ const LINKS = {
 const OCCASIONS = [
   { tag: "birthday", name: "Birthdays", line: "Another year, another slice" },
   { tag: "kids", name: "Kids' parties", line: "Their favourite things, in cake" },
-  { tag: "baby", name: "Baby showers", line: "Welcoming someone new" },
-  { tag: "celebration", name: "Celebrations", line: "Christenings, Friendsmas and more" },
+  { tag: "baby", name: "Baby showers", line: "Showers and gender reveals" },
+  { tag: "celebration", name: "Celebrations", line: "Christenings, graduations and more" },
   { tag: "cupcakes", name: "Cupcakes", line: "Boxes of 12 for sharing" },
   { tag: "business", name: "Business and events", line: "Your logo or brand, on cupcakes" }
 ];
@@ -536,6 +559,10 @@ const CAKES = [
   { img: "assets/cakes/sprinkle-sponge-23.jpg", title: "Sprinkle sponge 23", tag: "birthday", alt: "Tall white drip cake topped with sprinkle sponge pieces and a gold 23" },
   { img: "assets/cakes/black-and-gold-30th.jpg", title: "Black and gold 30th", tag: "birthday", alt: "Tall black buttercream cake with gold topper, gold spheres and a toy motorbike" },
   { img: "assets/cakes/bows-for-bae.jpg", title: "Bows for bae", tag: "birthday", alt: "Cream cake with piped shells and black ribbon bows" },
+  { img: "assets/cakes/blue-butterflies-hello-22.jpg", title: "Blue butterflies, hello 22", tag: "birthday", alt: "Tall two-tier cream and blue cake with a gold crown and cascading blue butterflies" },
+  { img: "assets/cakes/black-heart-twenty-one.jpg", title: "Black heart twenty one", tag: "birthday", alt: "Black heart cake with piped border, Twenty One in white and red ribbon bows" },
+  { img: "assets/cakes/another-year-becoming-her.jpg", title: "Another year becoming her", tag: "birthday", alt: "Cream heart cake with pink and blue bows and dried flowers" },
+  { img: "assets/cakes/four-birthday-cakes.jpg", title: "Four birthday cakes", tag: "birthday", alt: "Four tall celebration cakes together with names and number toppers" },
   { img: "assets/cakes/hello-kitty-heart.jpg", title: "Hello Kitty heart", tag: "kids", alt: "Pink heart cake with Hello Kitty, piped roses, pearls and ribbons" },
   { img: "assets/cakes/pink-and-mint-stitch.jpg", title: "Pink and mint Stitch", tag: "kids", alt: "Tall pink and mint cake with Stitch toppers and piped roses" },
   { img: "assets/cakes/mermaid-fourth-birthday.jpg", title: "Mermaid fourth birthday", tag: "kids", alt: "Pink ridged cake with a mermaid topper, shells and sand crumbs" },
@@ -543,10 +570,14 @@ const CAKES = [
   { img: "assets/cakes/mickey-first-birthday.jpg", title: "Mickey first birthday", tag: "kids", alt: "Red and cream first birthday cake with a Mickey Mouse theme" },
   { img: "assets/cakes/peppa-third-birthday.jpg", title: "Peppa third birthday", tag: "kids", alt: "Pink marbled cake with Peppa Pig toppers, daisies and pastel spheres" },
   { img: "assets/cakes/arsenal-birthday.jpg", title: "Arsenal birthday", tag: "kids", alt: "Red and cream football club birthday cake with gold details" },
+  { img: "assets/cakes/pink-paw-patrol-first-birthday.jpg", title: "Pink first birthday", tag: "kids", alt: "Pink and cream striped drip cake with puppy toppers for a first birthday" },
+  { img: "assets/cakes/dinosaur-roar-birthday.jpg", title: "Dinosaur roar", tag: "kids", alt: "Green and cream drip cake with dinosaurs, leaves and chocolates" },
   { img: "assets/cakes/baby-bear-and-gold.jpg", title: "Baby bear and gold", tag: "baby", alt: "Pale yellow cake with a teddy bear, clouds, gold spheres and gold leaf" },
   { img: "assets/cakes/pregnancy-bento-box.jpg", title: "Pregnancy announcement box", tag: "baby", alt: "Small cream cake with a funny pregnancy drawing, with matching cupcakes" },
+  { img: "assets/cakes/gender-reveal-drip.jpg", title: "Boy or girl? Gender reveal", tag: "baby", alt: "Cream cake with pink and blue drip, macarons and a Boy or Girl topper" },
   { img: "assets/cakes/christening-blue-and-gold.jpg", title: "Blue and gold christening", tag: "celebration", alt: "Blue and cream cake with a gold cross, gold spheres and pampas" },
   { img: "assets/cakes/friendsmas-red-bows.jpg", title: "Friendsmas red bows", tag: "celebration", alt: "Cream cake with piped shells and red ribbon bows" },
+  { img: "assets/cakes/nurse-congratulations.jpg", title: "Nursing congratulations", tag: "celebration", alt: "Cream cake with a stethoscope, plasters, hearts and Congratulations Rimsha on the board" },
   { img: "assets/cakes/pink-petal-cupcakes.jpg", title: "Pink petal cupcakes", tag: "cupcakes", alt: "Pink and cream cupcakes with dried flowers and pearls" },
   { img: "assets/cakes/peach-and-gold-cupcakes.jpg", title: "Peach and gold cupcakes", tag: "cupcakes", alt: "Peach, pink and cream piped cupcakes with gold pearls" },
   { img: "assets/cakes/chocolate-and-gold-cupcakes.jpg", title: "Chocolate and gold", tag: "cupcakes", alt: "Chocolate and coffee rose cupcakes with gold pearls" },
