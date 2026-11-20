@@ -456,13 +456,6 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   if (restoreDraft()) $("#welcomeBack").hidden = false;
   refresh();
 
-  // Keep a short summary for the thank-you page celebration
-  $("#orderForm").addEventListener("submit", () => {
-    if ([...$("#orderForm").elements].some((el) => el.willValidate && !el.disabled && !el.checkValidity())) return;
-    store.set("nj-order-summary", { name: $("#name").value.trim().split(/\s+/)[0], occasion: $("#occasion").value, date: $("#date").value,
-      size: $("#what").value, flavour: $("#flavour").value, colours: colIn.value, msg: $("#msg").value, price: $("#priceField").value });
-  });
-
   // Clear email subject, and a sending state
   $("#orderForm").addEventListener("submit", (e) => {
     // Check every box ourselves, so we can say exactly which one needs attention
@@ -482,20 +475,56 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
       return;
     }
     $("#formError").hidden = true;
-    const name = $("#name").value.trim(), occ = $("#occasion").value, d = date.value;
-    $("#subject").value = `New cake enquiry: ${name}${occ ? ", " + occ : ""}${d ? ", " + d.split("-").reverse().join("/") : ""}`;
-    // iPhones (Safari) can fail to send a form that has an empty photo box, so leave empty ones out
-    document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => { if (!f.files || !f.files.length) f.disabled = true; });
-    $("#sendBtn").disabled = true; $("#sendBtn").textContent = "Sending...";
-    // Safety net: if nothing has happened after 12 seconds, say so and offer another way
-    clearTimeout(window.__sendTimer);
-    window.__sendTimer = setTimeout(() => {
-      $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Try sending again";
-      document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => (f.disabled = false));
-      alertBox("This is taking longer than usual. Please check your internet and try again. Still stuck? Your answers are saved, so you can also DM me on Instagram @cakesbynashadajones or email njcakeacademy@outlook.com.");
-    }, 12000);
+    e.preventDefault();
+    sendEnquiry();
   });
-  addEventListener("pageshow", () => { clearTimeout(window.__sendTimer); document.querySelectorAll('#orderForm input[type="file"]').forEach((f) => (f.disabled = false)); $("#sendBtn").disabled = false; $("#sendBtn").textContent = "Send my enquiry"; });
+
+  // ================= Sending =================
+  // The form is sent in the background, and we only show the thank-you page once
+  // FormSubmit confirms it has been received. If it fails, the customer is told clearly.
+  const ENDPOINT = "https://formsubmit.co/ajax/njcakeacademy@outlook.com";
+  const btn = $("#sendBtn");
+  function buildData(withPhotos) {
+    const fd = new FormData();
+    const name = $("#name").value.trim(), occ = $("#occasion").value, d = date.value;
+    [...$("#orderForm").elements].forEach((el) => {
+      if (!el.name || el.disabled || el.name === "_next" || el.name === "_subject") return;
+      if (el.type === "file") { if (withPhotos && el.files && el.files[0]) fd.append(el.name, el.files[0], el.files[0].name); return; }
+      if ((el.type === "checkbox" || el.type === "radio") && !el.checked) return;
+      if (el.type === "submit") return;
+      fd.append(el.name, el.value);
+    });
+    fd.set("_subject", `New cake enquiry: ${name}${occ ? ", " + occ : ""}${d ? ", " + d.split("-").reverse().join("/") : ""}`);
+    if (!withPhotos && [...document.querySelectorAll('#orderForm input[type="file"]')].some((f) => f.files && f.files.length))
+      fd.append("Photos", "The customer added inspiration photos but they couldn't be sent. Please ask them to send them by DM or email.");
+    return fd;
+  }
+  async function post(fd) {
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      const r = await fetch(ENDPOINT, { method: "POST", body: fd, headers: { Accept: "application/json" }, signal: ctrl.signal });
+      const j = await r.json().catch(() => ({}));
+      return r.ok && String(j.success) === "true";
+    } finally { clearTimeout(t); }
+  }
+  async function sendEnquiry() {
+    btn.disabled = true; btn.textContent = "Sending...";
+    const hasPhotos = [...document.querySelectorAll('#orderForm input[type="file"]')].some((f) => f.files && f.files.length);
+    let ok = false;
+    try { ok = await post(buildData(true)); } catch (_) { ok = false; }
+    if (!ok && hasPhotos) { try { ok = await post(buildData(false)); } catch (_) { ok = false; } }   // try again without photos
+    if (!ok) { try { await new Promise((r) => setTimeout(r, 1500)); ok = await post(buildData(false)); } catch (_) { ok = false; } } // one more go
+    if (ok) {
+      store.set("nj-order-summary", { name: $("#name").value.trim().split(/\s+/)[0], occasion: $("#occasion").value, date: $("#date").value,
+        size: $("#what").value, flavour: $("#flavour").value, colours: colIn.value, msg: $("#msg").value, price: $("#priceField").value });
+      location.href = "/thanks";
+      return;
+    }
+    btn.disabled = false; btn.textContent = "Try sending again";
+    alertBox("Sorry, your enquiry didn't send. Please check your internet connection and tap 'Try sending again'. Your answers are saved. If it still won't send, please DM me on Instagram @cakesbynashadajones or email njcakeacademy@outlook.com.");
+    $("#formError").scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+  addEventListener("pageshow", () => { btn.disabled = false; btn.textContent = "Send my enquiry"; });
 </script>
 </body>
 </html>
