@@ -69,7 +69,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .xmas-bar .flake { color: var(--latte); margin: 0 8px; }
 #snow { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 25; }
 @media (prefers-reduced-motion: reduce) { #snow { display: none; } }
-.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(245,236,225,.94); backdrop-filter: blur(10px); border-bottom: 1px solid transparent; transition: border-color .3s; }
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(245,236,225,.94); border-bottom: 1px solid transparent; transition: border-color .3s; }
 .site-header.scrolled { border-color: var(--line); }
 .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 24px; height: 72px; }
 .site-header .banner { height: 48px; width: auto; }
@@ -290,7 +290,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   --cocoa: #F3E7DA; --muted: #C7B19E; --latte: #CCB395; --accent: #CCB395; --accent-hover: #DCC6AA;
   color-scheme: dark;
 }
-.site-header { background: rgba(46,30,25,.94) !important; }
+.site-header { background: #2E1E19 !important; }
 .btn--solid { color: #2E1E19; }
 .btn:hover { color: #2E1E19; }
 .xmas-bar, .site-footer, .toast { background: #1F1411; color: var(--latte); }
@@ -708,22 +708,29 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   const bar = document.getElementById("xmasBar"); bar.hidden = false;
   if (now >= launch) document.getElementById("xmasText").textContent = "Our Christmas designs are out now";
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  // Light snow: no glow effect, capped sharpness, fewer flakes, 30 frames a second, and it rests when the page is hidden
   const c = document.getElementById("snow"), ctx = c.getContext("2d");
-  let w, h, flakes = [];
-  const size = () => { const r = devicePixelRatio || 1; w = innerWidth; h = innerHeight; c.width = w * r; c.height = h * r; ctx.setTransform(r, 0, 0, r, 0, 0); };
+  let w = 0, h = 0, flakes = [], last = 0, running = true;
+  const size = () => { if (innerWidth === w && Math.abs(innerHeight - h) < 150) return; // phones resize while scrolling; ignore that
+    const r = Math.min(devicePixelRatio || 1, 1.5); w = innerWidth; h = innerHeight; c.width = Math.round(w * r); c.height = Math.round(h * r); ctx.setTransform(r, 0, 0, r, 0, 0); };
   size(); addEventListener("resize", size);
-  const count = Math.round(Math.min(70, w / 18));
-  for (let i = 0; i < count; i++) flakes.push({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 2.6, s: .3 + Math.random() * .8, d: Math.random() * 6.28 });
-  (function tick() {
-    ctx.clearRect(0, 0, w, h);
-    for (const f of flakes) {
-      f.y += f.s; f.d += .01; f.x += Math.sin(f.d) * .4;
-      if (f.y > h + 5) { f.y = -5; f.x = Math.random() * w; }
-      ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 6.28);
-      ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.shadowColor = "rgba(107,68,51,.35)"; ctx.shadowBlur = 3; ctx.fill();
+  const count = Math.round(Math.min(40, w / 22));
+  for (let i = 0; i < count; i++) flakes.push({ x: Math.random() * w, y: Math.random() * h, r: 1 + Math.random() * 2.4, s: .5 + Math.random() * 1.2, d: Math.random() * 6.28 });
+  document.addEventListener("visibilitychange", () => { running = !document.hidden; if (running) requestAnimationFrame(tick); });
+  function tick(t) {
+    if (!running) return;
+    if (t - last >= 33) {
+      last = t; ctx.clearRect(0, 0, w, h); ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.beginPath();
+      for (const f of flakes) {
+        f.y += f.s; f.d += .02; f.x += Math.sin(f.d) * .6;
+        if (f.y > h + 5) { f.y = -5; f.x = Math.random() * w; }
+        ctx.moveTo(f.x + f.r, f.y); ctx.arc(f.x, f.y, f.r, 0, 6.28);
+      }
+      ctx.fill();
     }
     requestAnimationFrame(tick);
-  })();
+  }
+  requestAnimationFrame(tick);
 })();
 </script>
 </body>
