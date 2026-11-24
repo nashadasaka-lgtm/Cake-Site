@@ -105,6 +105,7 @@ label > input, label > select, label > textarea, label > .hint, .label > input, 
 .tier .slice { position: absolute; right: 0; top: 8px; bottom: 8px; width: 22%; border-radius: 0 3px 3px 0; overflow: hidden;
   background: repeating-linear-gradient(to bottom, var(--sp) 0 22%, var(--bc) 22% 30%); transition: background .4s; box-shadow: inset 3px 0 0 rgba(0,0,0,.12); }
 .tier .slice.speckle { background: radial-gradient(circle, #1E1410 1.2px, transparent 1.6px) 0 0 / 7px 7px, repeating-linear-gradient(to bottom, var(--sp) 0 22%, var(--bc) 22% 30%); }
+.tier .heartmark { position: absolute; left: 6%; right: 26%; top: 8%; bottom: 8%; width: 68%; height: 84%; fill: none; stroke: var(--ac); stroke-width: 7; stroke-dasharray: 2 9; stroke-linecap: round; opacity: .95; }
 .tier .words { position: absolute; left: 8%; right: 26%; top: 50%; transform: translateY(-50%); text-align: center; font-family: var(--script); font-style: italic; font-weight: 500; line-height: 1.05; color: var(--tc, #4A3128); overflow: hidden; word-break: break-word; }
 .plate { height: 12px; margin-top: 3px; border-radius: 50%; background: rgba(255,255,255,.9); transition: width .5s cubic-bezier(.3,1.4,.5,1); }
 .cups { display: flex; gap: 12px; align-items: flex-end; }
@@ -226,6 +227,8 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
           <option>6" tall (serves 10 to 15), from &pound;85</option>
           <option>8" 2-layer, from &pound;90</option>
           <option>8" tall (serves 20 to 25), from &pound;100</option>
+          <option>6" heart, from &pound;75</option>
+          <option>8" heart, from &pound;95</option>
           <option>6" themed (serves 10 to 15), from &pound;125</option>
           <option>8" themed (serves 20 to 25), from &pound;145</option>
           <option>Box of 12 cupcakes, from &pound;35</option>
@@ -340,7 +343,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   // ================= Live cake preview + price guide =================
   const SIZE = [
     { k: "4\"", base: 55, w: 96, h: 70 }, { k: "6\" 2-layer", base: 75, w: 132, h: 56 }, { k: "6\" tall", base: 85, w: 132, h: 80 }, { k: "8\" 2-layer", base: 90, w: 168, h: 62 }, { k: "8\" tall", base: 100, w: 168, h: 90 },
-    { k: "6\" themed", base: 125, w: 132, h: 80, themed: 1 }, { k: "8\" themed", base: 145, w: 168, h: 90, themed: 1 }, { k: "cupcakes", base: 35, cups: 1 }
+    { k: "6\" heart", base: 75, w: 132, h: 70, heart: 1 }, { k: "8\" heart", base: 95, w: 168, h: 78, heart: 1 }, { k: "6\" themed", base: 125, w: 132, h: 80, themed: 1 }, { k: "8\" themed", base: 145, w: 168, h: 90, themed: 1 }, { k: "cupcakes", base: 35, cups: 1 }
   ];
   const FLAV = { "vanilla": ["#F3DFA2", 0], "chocolate": ["#5B3A29", 0], "cookies and cream": ["#3A2A24", 3, 1], "lemon": ["#F6E27A", 3], "biscoff": ["#C8894B", 5], "red velvet": ["#8E1B2A", 8] };
   const COLOURS = [
@@ -397,6 +400,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
         <div class="topper${acrylic ? " acrylic" : ""}"><span class="sign">${topperText}</span><span class="sticks"><i></i><i></i></span></div>
         <div class="tier" style="width:${s.w}px;height:${s.h}px;--bc:${bc};--ac:${ac};--sp:${flav ? flav[1] : "#F3DFA2"};--tc:${tcol || (bc === "#222222" ? "#F3E7DA" : "#4A3128")}">
           ${flav ? `<span class="slice${flav[3] ? " speckle" : ""}"></span>` : ""}
+          ${s.heart ? `<svg class="heartmark" viewBox="0 0 100 90" aria-hidden="true"><path d="M50 84 C20 62 4 46 4 28 C4 14 15 4 28 4 C38 4 46 10 50 18 C54 10 62 4 72 4 C85 4 96 14 96 28 C96 46 80 62 50 84 Z"/></svg>` : ""}
           ${msg ? `<span class="words" style="font-size:${fs}px">${escapeHtml(msg)}</span>` : ""}
         </div>
         <div class="plate" style="width:${s.w + 48}px"></div>`;
