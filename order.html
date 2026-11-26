@@ -63,6 +63,18 @@ input[type="file"]::file-selector-button { font: 400 .72rem var(--body); letter-
 .check { display: flex; flex-wrap: nowrap; gap: 12px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: .95rem; color: var(--text); cursor: pointer; }
 .check input { width: 18px; height: 18px; margin-top: 3px; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; flex: none; }
 label > input, label > select, label > textarea, label > .hint, .label > input, .label > .hint { flex: 0 0 100%; }
+.addons-wrap { display: grid; }
+.addons { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; flex: 0 0 100%; }
+.addon { display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); padding: 12px 12px; cursor: pointer; text-transform: none; letter-spacing: 0; font-size: .92rem; color: var(--text); flex-wrap: nowrap !important; }
+.addon input { width: 18px; height: 18px; margin: 0; accent-color: var(--latte); -webkit-appearance: auto; appearance: auto; flex: 0 0 auto !important; }
+.addon .ad-name { flex: 1 1 auto; }
+.addon .ad-price { color: var(--latte); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.addon:has(input:checked) { border-color: var(--latte); background: rgba(204,179,149,.1); }
+.deco { position: absolute; pointer-events: none; }
+.deco.bow { width: 26px; height: 16px; }
+.deco.ball { border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff8, transparent 45%), var(--c); box-shadow: inset -3px -3px 6px rgba(0,0,0,.18); }
+.deco.flower { width: 20px; height: 20px; }
+.deco-layer { position: absolute; inset: 0; pointer-events: none; }
 .deliv-note { border-left: 2px solid var(--latte); background: rgba(204,179,149,.08); padding: 14px 16px; display: grid; gap: 4px; }
 .deliv-note b { font-weight: 400; font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: var(--latte); }
 .deliv-note p { margin: 0; font-size: .92rem; color: var(--text); }
@@ -277,7 +289,14 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
         <input type="file" name="Inspiration photo 2" accept="image/*" aria-label="Inspiration photo 2">
         <span class="hint">Got more? Send them to me on Instagram.</span>
       </div>
-      <label class="check"><input type="checkbox" name="Acrylic topper" value="Yes, please upgrade to an acrylic topper (+£10)"> Upgrade to an acrylic topper (+&pound;10)</label>
+      <div class="label addons-wrap">Add-ons <span class="opt">(optional, tick any you'd like)</span>
+        <div class="addons" id="addons">
+          <label class="addon"><input type="checkbox" name="Acrylic topper" data-price="10" value="Yes, please upgrade to an acrylic topper (+£10)"><span class="ad-name">Acrylic topper</span><span class="ad-price">+&pound;10</span></label>
+          <label class="addon"><input type="checkbox" name="Add-on: Bows" data-price="3" data-key="bows" value="Yes, bows (+£3)"><span class="ad-name">Bows</span><span class="ad-price">+&pound;3</span></label>
+          <label class="addon"><input type="checkbox" name="Add-on: Cake balls" data-price="10" data-key="balls" value="Yes, cake balls (+£10)"><span class="ad-name">Cake balls</span><span class="ad-price">+&pound;10</span></label>
+          <label class="addon"><input type="checkbox" name="Add-on: Flowers" data-price="8" data-key="flowers" value="Yes, flowers (+£8)"><span class="ad-name">Flowers</span><span class="ad-price">+&pound;8</span></label>
+        </div>
+      </div>
       <label class="check"><input type="checkbox" name="Own toppers" value="Yes, I'll supply my own toppers or decorations"> I'd like to supply my own toppers or decorations</label>
       <label for="allergies">Any allergies? <span class="req">*</span><input id="allergies" name="Allergies" required placeholder="Write 'None' if not"></label>
     </fieldset>
@@ -379,6 +398,19 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   });
   const syncSwatches = () => { const v = " " + colIn.value.toLowerCase() + " "; document.querySelectorAll(".sw").forEach((b) => b.setAttribute("aria-pressed", v.includes(b.dataset.name.toLowerCase()))); };
 
+  const addonKeys = () => [...document.querySelectorAll('#addons input[data-key]:checked')].map((i) => i.dataset.key);
+  function decorations(s, cols) {
+    const k = addonKeys(), out = [], acc = cols[1] || "#D4AF37", main = cols[0] || "#F2B8C6";
+    const bowSvg = (c) => `<svg viewBox="0 0 26 16"><path d="M13 8 L2 1 L2 15 Z M13 8 L24 1 L24 15 Z" fill="${c}"/><circle cx="13" cy="8" r="3" fill="${c}"/><path d="M12 9 L8 16 M14 9 L18 16" stroke="${c}" stroke-width="2"/></svg>`;
+    const flowerSvg = (c) => `<svg viewBox="0 0 20 20">${[0,72,144,216,288].map((a) => `<ellipse cx="10" cy="5" rx="4" ry="5" fill="${c}" transform="rotate(${a} 10 10)"/>`).join("")}<circle cx="10" cy="10" r="3" fill="#F6DC6B"/></svg>`;
+    if (k.includes("bows")) [0.08, 0.5, 0.92].forEach((x) => out.push(`<span class="deco bow" style="left:calc(${x * 100}% - 13px);top:-2px">${bowSvg(acc === "#FFFDF8" ? "#C8323C" : acc)}</span>`));
+    if (k.includes("balls")) [[-.06, 1, 18, acc], [.02, .96, 12, main], [.86, 1, 16, main], [.96, .97, 11, acc], [-.03, .86, 9, "#D4AF37"]].forEach(([x, y, r, c]) =>
+      out.push(`<span class="deco ball" style="--c:${c};width:${r}px;height:${r}px;left:calc(${x * 100}% - ${r / 2}px);top:calc(${y * 100}% - ${r}px)"></span>`));
+    if (k.includes("flowers")) [[.18, -.12], [.3, -.16], [.72, -.14], [.82, -.1]].forEach(([x, y], n) =>
+      out.push(`<span class="deco flower" style="left:calc(${x * 100}% - 10px);top:${y * s.h}px">${flowerSvg(n % 2 ? "#F2B8C6" : "#FFFDF8")}</span>`));
+    return out.join("");
+  }
+
   function drawCake() {
     const size = pickSize($("#what").value), flav = pickFlav($("#flavour").value);
     const cols = findColours(colIn.value), tcol = findColours($("#textColour").value)[0];
@@ -402,10 +434,11 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
           ${flav ? `<span class="slice${flav[3] ? " speckle" : ""}"></span>` : ""}
           ${s.heart ? `<svg class="heartmark" viewBox="0 0 100 90" aria-hidden="true"><path d="M50 84 C20 62 4 46 4 28 C4 14 15 4 28 4 C38 4 46 10 50 18 C54 10 62 4 72 4 C85 4 96 14 96 28 C96 46 80 62 50 84 Z"/></svg>` : ""}
           ${msg ? `<span class="words" style="font-size:${fs}px">${escapeHtml(msg)}</span>` : ""}
+          <span class="deco-layer">${decorations(s, cols)}</span>
         </div>
         <div class="plate" style="width:${s.w + 48}px"></div>`;
     }
-    const shape = (size ? size.k : "") + "|" + (flav ? flav[0] : "") + "|" + acrylic;
+    const shape = (size ? size.k : "") + "|" + (flav ? flav[0] : "") + "|" + acrylic + "|" + addonKeys().join(",");
     wrap.innerHTML = html;
     if (shape !== lastShape) { wrap.classList.remove("bump"); void wrap.offsetWidth; wrap.classList.add("bump"); lastShape = shape; }
   }
@@ -420,6 +453,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
       total = size.base; lines.push(`${size.cups ? "12 cupcakes" : size.k.replace("\"", " inch")} £${size.base}`);
       if (flav && flav[2] && !size.cups) { total += flav[2]; lines.push(`${flav[0][0].toUpperCase() + flav[0].slice(1)} +£${flav[2]}`); }
       if (acrylic && !size.cups) { total += 10; lines.push("Acrylic topper +£10"); }
+      document.querySelectorAll('#addons input[data-key]:checked').forEach((i) => { total += +i.dataset.price; lines.push(`${i.parentElement.querySelector(".ad-name").textContent} +£${i.dataset.price}`); });
       if (delivery) lines.push("+ delivery, quoted separately");
       big = `<small>from</small>£${total}`;
     }
