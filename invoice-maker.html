@@ -224,7 +224,7 @@ const PRICE_LIST = [
   { t: "6 inch themed cake", a: 125 }, { t: "8 inch themed cake", a: 145 },
   { t: "Box of 12 cupcakes", a: 35 }, { t: "Cookies and cream flavour", a: 3 }, { t: "Lemon flavour", a: 3 }, { t: "Biscoff flavour", a: 5 }, { t: "Red velvet flavour", a: 8 }, { t: "Acrylic topper", a: 10 }, { t: "Bows", a: 3 }, { t: "Cake balls", a: 10 }, { t: "Flowers", a: 8 }, { t: "Delivery", a: 0 }, { t: "Adding your own toppers", a: 0 }
 ];
-const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThank you for choosing Cakes by Nashada Jones!";
+const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThe remaining balance is due 3 days before your cake date.\n\nThank you for choosing Cakes by Nashada Jones!";
 
 const $ = (s) => document.querySelector(s);
 const store = {
@@ -310,6 +310,11 @@ function update() {
   if ($("#bRemember").checked) store.set("nj-bank", d.bank); else store.del("nj-bank");
 }
 $("#form").addEventListener("input", (e) => { if (e.target.closest(".item")) return; if (!["bRemember"].includes(e.target.id)) $("#exampleNote").hidden = true; update(); });
+$("#eDate").addEventListener("change", () => {
+  const v = $("#eDate").value; if (!v) return;
+  const [y, m, d] = v.split("-").map(Number); const t = new Date(y, m - 1, d - 3);
+  $("#balDue").value = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`;
+});
 $("#form").addEventListener("change", update);
 $("#form").addEventListener("submit", (e) => e.preventDefault());
 NJInvoice.bind($("#preview"));

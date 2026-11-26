@@ -21,7 +21,8 @@
   }
 
   // ---- Short links: details are packed into a list and compressed ----
-  const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThank you for choosing Cakes by Nashada Jones!";
+  const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThe remaining balance is due 3 days before your cake date.\n\nThank you for choosing Cakes by Nashada Jones!";
+  const OLD_NOTE = "A 50% deposit is needed to secure your date.\n\nThank you for choosing Cakes by Nashada Jones!";
   const PATHS = ["n", "date", "paid", "c.name", "c.phone", "c.email", "e.occ", "e.date", "e.time", "e.method", "e.addr",
     "k.title", "k.size", "k.flavour", "k.colour", "k.design", "k.msg", "k.textColour", "k.allergies",
     "dep", "depDue", "balDue", "notes", "bank.name", "bank.sort", "bank.acc", "bank.bank", "items"];
@@ -47,7 +48,7 @@
     const d = {};
     PATHS.forEach((p, i) => {
       let v = arr[i];
-      if (p === "notes") v = v === 1 ? DEFAULT_NOTE : v;
+      if (p === "notes") v = (v === 1 || v === OLD_NOTE) ? DEFAULT_NOTE : v;
       else if (p === "paid") v = ["none", "deposit", "full"][v] || "none";
       else if (p === "e.method") v = v ? "delivery" : "collection";
       else if (p === "items") v = (v || []).map(([t, a]) => ({ t, a }));
@@ -171,8 +172,7 @@
         ${bankRow("Sort code", b.sort)}
         ${bankRow("Account number", b.acc)}
         ${b.bank ? bankRow("Bank", b.bank) : ""}
-        ${bankRow("Payment reference", d.n || "")}
-        <p class="hint">Please pay by bank transfer and use the reference above, so I can match your payment. Payment can't be made on this page.</p>
+        <p class="hint">Please pay by bank transfer. Payment can't be made on this page.</p>
       </div>
     </section>`}
 
