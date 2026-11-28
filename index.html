@@ -121,6 +121,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .xmas-box { border: 1px solid rgba(232,207,168,.45); border-radius: 4px; padding: 18px; display: grid; gap: 2px; }
 .xmas-box span { font-size: .72rem; letter-spacing: .2em; text-transform: uppercase; color: #E9CBC6; }
 .xmas-box b { font-family: var(--display); font-weight: 400; font-size: 2.4rem; line-height: 1; color: #F5E2DD; }
+.xmas-dates .xmas-box b { font-size: 1.7rem; }
 .xmas-flav { display: flex; flex-wrap: wrap; gap: 8px; }
 .xmas-flav span { border: 1px solid rgba(232,207,168,.45); border-radius: 999px; padding: 6px 14px; font-size: .88rem; }
 .xmas .btn--solid { background: #E8CFA8; border-color: #E8CFA8; color: #4A121D; justify-self: start; }
@@ -376,7 +377,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
     <div class="wrap xmas-grid">
       <div class="xmas-pics">
         <img src="assets/cakes/christmas-cupcakes-1.jpg" alt="Box of Christmas cupcakes piped in red, cream and green with berries, pine cones and gold pearls" loading="lazy">
-        <img src="assets/cakes/christmas-cupcakes-2.jpg" alt="Christmas cupcakes with holly leaves, berries and a gold Merry Christmas topper" loading="lazy">
+        <img src="assets/cakes/christmas-cupcakes-close.jpg" alt="Close-up of Christmas cupcakes with red and cream swirls, berries, pine cones and gold pearls" loading="lazy">
       </div>
       <div class="xmas-info">
         <div class="head" style="margin-bottom:0">
@@ -388,9 +389,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
           <div class="xmas-box"><span>Box of 6</span><b>&pound;30</b></div>
           <div class="xmas-box"><span>Box of 12</span><b>&pound;40</b></div>
         </div>
+        <div class="xmas-boxes xmas-dates"><div class="xmas-box"><span>Pre-order by</span><b>18 Dec</b></div><div class="xmas-box"><span>Collection</span><b>23 &amp; 24 Dec</b></div></div>
         <div class="xmas-flav" aria-label="Flavours"><span>Vanilla</span><span>Cookies and cream</span><span>Red velvet</span></div>
         <a class="btn btn--solid" id="xmasBtn" href="/order#christmas">Pre-order now <svg class="arr"><use href="#arr"/></svg></a>
-        <p class="xmas-note" id="xmasNote">Collection, or delivery by courier. 50% deposit to secure your box.</p>
+        <p class="xmas-note" id="xmasNote">Collection on 23rd or 24th December, or delivery by courier. 50% deposit to secure your box.</p>
       </div>
     </div>
   </section>
@@ -790,7 +792,11 @@ if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: re
   if (now < open) {
     txt.textContent = "Christmas cupcakes: pre-orders open Monday 30th November";
     const b = document.getElementById("xmasBtn"); b.setAttribute("aria-disabled", "true"); b.removeAttribute("href"); b.firstChild.textContent = "Pre-orders open Monday 30 November ";
-  } else txt.textContent = "Christmas cupcakes are now available to pre-order";
+  } else if (now < new Date(2026, 11, 19)) txt.textContent = "Christmas cupcakes: pre-order by 18th December";
+  else {
+    txt.textContent = "Christmas pre-orders are now closed. Thank you!";
+    const b = document.getElementById("xmasBtn"); b.setAttribute("aria-disabled", "true"); b.removeAttribute("href"); b.firstChild.textContent = "Pre-orders now closed ";
+  }
   if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
   // Light snow: no glow effect, capped sharpness, fewer flakes, 30 frames a second, and it rests when the page is hidden
   const c = document.getElementById("snow"), ctx = c.getContext("2d");

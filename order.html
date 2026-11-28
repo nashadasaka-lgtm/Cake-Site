@@ -352,7 +352,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   });
 
   // Christmas boxes: only vanilla, cookies and cream or red velvet (no extra cost)
-  const XMAS_OPEN = new Date(2026, 10, 30), XMAS_END = new Date(2026, 11, 27);
+  const XMAS_OPEN = new Date(2026, 10, 30), XMAS_END = new Date(2026, 11, 19); // pre-orders close after 18 Dec
   const xmasLive = () => { const n = new Date(); return n >= XMAS_OPEN && n < XMAS_END; };
   if (!xmasLive()) $("#xmasGroup").remove();
   const flavHint = $("#flavour").closest("label").querySelector(".hint"), flavHintText = flavHint.textContent;
@@ -361,6 +361,10 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     [...$("#flavour").options].forEach((o) => { if (!o.value) return; o.dataset.t = o.dataset.t || o.text; const ok = /^(vanilla|cookies and cream|red velvet)/i.test(o.dataset.t); o.disabled = xm && !ok; o.text = xm ? o.dataset.t.replace(/\s*\(\+£\d+\)/, "") : o.dataset.t; o.value = o.dataset.t; });
     if (xm && $("#flavour").selectedOptions[0] && $("#flavour").selectedOptions[0].disabled) $("#flavour").value = "";
     flavHint.textContent = xm ? "Christmas cupcakes come in vanilla, cookies and cream or red velvet, at no extra cost." : flavHintText;
+    // Christmas boxes are collected or delivered on 23 or 24 December only
+    const dIn = $("#date"); dIn.dataset.min = dIn.dataset.min || dIn.min;
+    if (xm) { dIn.min = "2026-12-23"; dIn.max = "2026-12-24"; if (dIn.value && (dIn.value < "2026-12-23" || dIn.value > "2026-12-24")) dIn.value = ""; $("#dateNote").textContent = "Christmas boxes are ready on 23rd or 24th December."; }
+    else { dIn.min = dIn.dataset.min; dIn.removeAttribute("max"); }
   }
   $("#what").addEventListener("change", xmasFlavours);
   // Coming from the Christmas section: /order#christmas
