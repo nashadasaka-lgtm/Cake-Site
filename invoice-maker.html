@@ -224,6 +224,7 @@ const PRICE_LIST = [
   { t: "6 inch themed cake", a: 125 }, { t: "8 inch themed cake", a: 145 },
   { t: "Box of 12 cupcakes", a: 35 }, { t: "Christmas cupcakes, box of 6", a: 28 }, { t: "Christmas cupcakes, box of 12", a: 40 }, { t: "Cookies and cream flavour", a: 3 }, { t: "Lemon flavour", a: 3 }, { t: "Biscoff flavour", a: 5 }, { t: "Red velvet flavour", a: 8 }, { t: "Acrylic topper", a: 10 }, { t: "Bows", a: 3 }, { t: "Cake balls", a: 10 }, { t: "Flowers", a: 8 }, { t: "Delivery", a: 0 }, { t: "Adding your own toppers", a: 0 }
 ];
+const XMAS_NOTE = "Full payment is needed to secure your Christmas box.\n\nCollection only, on 23rd or 24th December.\n\nThank you for choosing Cakes by Nashada Jones!";
 const DEFAULT_NOTE = "A 50% deposit is needed to secure your date.\n\nThe remaining balance is due 3 days before your cake date.\n\nThank you for choosing Cakes by Nashada Jones!";
 
 const $ = (s) => document.querySelector(s);
@@ -297,9 +298,12 @@ document.querySelectorAll("[data-pct]").forEach((b) => b.addEventListener("click
 $("#dep").addEventListener("input", () => { depAuto = false; });
 
 function update() {
-  if (depAuto) { const t = itemsTotal(); $("#dep").value = t ? Math.round(t * 50) / 100 : ""; }
+  const xmasOrder = items.some((i) => /^christmas cupcakes/i.test(i.t || ""));
+  if (depAuto) { const t = itemsTotal(); $("#dep").value = t ? (xmasOrder ? "" : Math.round(t * 50) / 100) : ""; }
+  if (xmasOrder && ($("#notes").value === DEFAULT_NOTE)) $("#notes").value = XMAS_NOTE;
+  if (!xmasOrder && ($("#notes").value === XMAS_NOTE)) $("#notes").value = DEFAULT_NOTE;
   $("#depReset").hidden = depAuto;
-  $("#depNote").textContent = depAuto ? "The deposit is always 50% of the total, worked out for you." : "You changed the deposit by hand.";
+  $("#depNote").textContent = xmasOrder && depAuto ? "Christmas boxes are paid in full, so there's no deposit." : depAuto ? "The deposit is always 50% of the total, worked out for you." : "You changed the deposit by hand.";
   const d = read();
   $("#addrWrap").hidden = d.e.method !== "delivery";
   $("#sumTotal").textContent = NJInvoice.money(NJInvoice.totals(d).total);

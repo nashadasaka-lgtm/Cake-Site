@@ -111,7 +111,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* Christmas collection: same chocolate page, with a soft burgundy glow that fades in and out (no hard edges) */
 .xmas { position: relative; isolation: isolate; }
 .xmas::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
-  background: radial-gradient(ellipse 60% 55% at 30% 50%, rgba(126,38,56,.42), rgba(94,26,38,.18) 45%, transparent 75%); }
+  background: radial-gradient(ellipse 65% 55% at 50% 40%, rgba(126,38,56,.42), rgba(94,26,38,.18) 45%, transparent 75%); }
+.xmas-head { text-align: center; display: grid; gap: 14px; justify-items: center; max-width: 720px; margin: 0 auto clamp(36px, 5vw, 56px); padding-bottom: clamp(28px, 4vw, 40px); position: relative; }
+.xmas-head::after { content: "\2726"; position: absolute; bottom: -.6em; left: 50%; transform: translateX(-50%); color: #D9A3AE; font-size: .9rem; padding: 0 14px; background: transparent; }
+.xmas-head h2 { font-size: clamp(2.5rem, 6vw, 4rem); }
+.xmas-head p:not(.eyebrow) { color: var(--muted); max-width: 52ch; }
+.xmas-head .eyebrow em { margin: 0 6px; }
 .xmas-grid { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 6vw, 88px); align-items: center; }
 .xmas-pics { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .xmas-pics img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
@@ -377,25 +382,27 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   </section>
 
   <section class="section xmas" id="christmas">
-    <div class="wrap xmas-grid">
-      <div class="xmas-pics">
-        <img src="assets/cakes/christmas-cupcakes-1.jpg" alt="Box of Christmas cupcakes piped in red, cream and green with berries, pine cones and gold pearls" loading="lazy">
-        <img src="assets/cakes/christmas-cupcakes-close.jpg" alt="Close-up of Christmas cupcakes with red and cream swirls, berries, pine cones and gold pearls" loading="lazy">
-      </div>
-      <div class="xmas-info">
-        <div class="head" style="margin-bottom:0">
-          <p class="eyebrow">The Christmas collection <em>&#10052;</em></p>
-          <h2>Christmas <em>cupcakes.</em></h2>
-          <p>Hand-piped in festive red, cream and green, finished with berries, pine cones, leaves and gold details.</p>
+    <div class="wrap">
+      <header class="xmas-head">
+        <p class="eyebrow"><em>&#10052;</em> Limited edition <em>&#10052;</em></p>
+        <h2>The Christmas <em>cupcake</em> collection</h2>
+        <p>Hand-piped in festive red, cream and green, finished with berries, pine cones, leaves and gold details.</p>
+      </header>
+      <div class="xmas-grid">
+        <div class="xmas-pics">
+          <img src="assets/cakes/christmas-cupcakes-1.jpg" alt="Box of Christmas cupcakes piped in red, cream and green with berries, pine cones and gold pearls" loading="lazy">
+          <img src="assets/cakes/christmas-cupcakes-close.jpg" alt="Close-up of Christmas cupcakes with red and cream swirls, berries, pine cones and gold pearls" loading="lazy">
         </div>
-        <div class="xmas-boxes">
-          <div class="xmas-box"><span>Box of 6</span><b>&pound;28</b></div>
-          <div class="xmas-box"><span>Box of 12</span><b>&pound;40</b></div>
+        <div class="xmas-info">
+          <div class="xmas-boxes">
+            <div class="xmas-box"><span>Box of 6</span><b>&pound;28</b></div>
+            <div class="xmas-box"><span>Box of 12</span><b>&pound;40</b></div>
+          </div>
+          <div class="xmas-boxes xmas-dates"><div class="xmas-box"><span>Pre-order by</span><b>18 Dec</b></div><div class="xmas-box"><span>Collection only</span><b>23 &amp; 24 Dec</b></div></div>
+          <div class="xmas-flav" aria-label="Flavours"><span>Vanilla</span><span>Cookies and cream</span><span>Red velvet</span></div>
+          <a class="btn btn--solid" id="xmasBtn" href="/order#christmas">Pre-order now <svg class="arr"><use href="#arr"/></svg></a>
+          <p class="xmas-note" id="xmasNote">Collection only, on 23rd or 24th December. Full payment secures your box.</p>
         </div>
-        <div class="xmas-boxes xmas-dates"><div class="xmas-box"><span>Pre-order by</span><b>18 Dec</b></div><div class="xmas-box"><span>Collection</span><b>23 &amp; 24 Dec</b></div></div>
-        <div class="xmas-flav" aria-label="Flavours"><span>Vanilla</span><span>Cookies and cream</span><span>Red velvet</span></div>
-        <a class="btn btn--solid" id="xmasBtn" href="/order#christmas">Pre-order now <svg class="arr"><use href="#arr"/></svg></a>
-        <p class="xmas-note" id="xmasNote">Collection on 23rd or 24th December, or delivery by courier. 50% deposit to secure your box.</p>
       </div>
     </div>
   </section>
