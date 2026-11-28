@@ -244,6 +244,10 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
           <option>6" themed (serves 10 to 15), from &pound;125</option>
           <option>8" themed (serves 20 to 25), from &pound;145</option>
           <option>Box of 12 cupcakes, from &pound;35</option>
+          <optgroup label="Christmas collection" id="xmasGroup">
+            <option>Christmas cupcakes, box of 6, &pound;30</option>
+            <option>Christmas cupcakes, box of 12, &pound;40</option>
+          </optgroup>
           <option>Not sure yet</option>
         </select>
       </label>
@@ -347,6 +351,24 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     ig.closest("label").style.opacity = none ? ".45" : "";
   });
 
+  // Christmas boxes: only vanilla, cookies and cream or red velvet (no extra cost)
+  const XMAS_OPEN = new Date(2026, 10, 30), XMAS_END = new Date(2026, 11, 27);
+  const xmasLive = () => { const n = new Date(); return n >= XMAS_OPEN && n < XMAS_END; };
+  if (!xmasLive()) $("#xmasGroup").remove();
+  const flavHint = $("#flavour").closest("label").querySelector(".hint"), flavHintText = flavHint.textContent;
+  function xmasFlavours() {
+    const xm = /christmas/i.test($("#what").value);
+    [...$("#flavour").options].forEach((o) => { if (!o.value) return; o.dataset.t = o.dataset.t || o.text; const ok = /^(vanilla|cookies and cream|red velvet)/i.test(o.dataset.t); o.disabled = xm && !ok; o.text = xm ? o.dataset.t.replace(/\s*\(\+£\d+\)/, "") : o.dataset.t; o.value = o.dataset.t; });
+    if (xm && $("#flavour").selectedOptions[0] && $("#flavour").selectedOptions[0].disabled) $("#flavour").value = "";
+    flavHint.textContent = xm ? "Christmas cupcakes come in vanilla, cookies and cream or red velvet, at no extra cost." : flavHintText;
+  }
+  $("#what").addEventListener("change", xmasFlavours);
+  // Coming from the Christmas section: /order#christmas
+  if (location.hash === "#christmas" && xmasLive()) {
+    $("#what").value = "Christmas cupcakes, box of 12, £40"; $("#occasion").value = "Christmas";
+    setTimeout(() => { xmasFlavours(); $("#orderForm").dispatchEvent(new Event("change")); }, 0);
+  }
+
   // Delivery postcode only when delivery is chosen
   document.querySelectorAll('input[name="Collection or delivery"]').forEach((r) => r.addEventListener("change", () => {
     const del = r.value === "Delivery" && r.checked;
@@ -362,7 +384,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
   // ================= Live cake preview + price guide =================
   const SIZE = [
     { k: "4\"", base: 55, w: 96, h: 70 }, { k: "6\" 2-layer", base: 75, w: 132, h: 56 }, { k: "6\" tall", base: 85, w: 132, h: 80 }, { k: "8\" 2-layer", base: 90, w: 168, h: 62 }, { k: "8\" tall", base: 100, w: 168, h: 90 },
-    { k: "6\" heart", base: 75, w: 132, h: 70, heart: 1 }, { k: "8\" heart", base: 95, w: 168, h: 78, heart: 1 }, { k: "6\" themed", base: 125, w: 132, h: 80, themed: 1 }, { k: "8\" themed", base: 145, w: 168, h: 90, themed: 1 }, { k: "cupcakes", base: 35, cups: 1 }
+    { k: "6\" heart", base: 75, w: 132, h: 70, heart: 1 }, { k: "8\" heart", base: 95, w: 168, h: 78, heart: 1 }, { k: "6\" themed", base: 125, w: 132, h: 80, themed: 1 }, { k: "8\" themed", base: 145, w: 168, h: 90, themed: 1 }, { k: "cupcakes", base: 35, cups: 1, label: "12 cupcakes" }, { k: "xmas6", base: 30, cups: 1, xmas: 1, label: "Christmas box of 6" }, { k: "xmas12", base: 40, cups: 1, xmas: 1, label: "Christmas box of 12" }
   ];
   const FLAV = { "vanilla": ["#F3DFA2", 0], "chocolate": ["#5B3A29", 0], "cookies and cream": ["#3A2A24", 3, 1], "lemon": ["#F6E27A", 3], "biscoff": ["#C8894B", 5], "red velvet": ["#8E1B2A", 8] };
   const COLOURS = [
@@ -378,7 +400,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     for (const [name, hex] of COLOURS) { const i = t.indexOf(name); if (i >= 0) { out.push([i, hex]); t = t.slice(0, i) + " ".repeat(name.length) + t.slice(i + name.length); } }
     return out.sort((a, b) => a[0] - b[0]).map((x) => x[1]);
   };
-  const pickSize = (v) => { v = (v || "").toLowerCase(); if (v.includes("cupcake")) return SIZE[5]; return SIZE.find((s) => s.k !== "cupcakes" && v.startsWith(s.k.toLowerCase()) ) || (v.startsWith("4") ? SIZE[0] : null); };
+  const pickSize = (v) => { v = (v || "").toLowerCase(); if (v.includes("christmas")) return SIZE.find((s) => s.k === (v.includes("12") ? "xmas12" : "xmas6")); if (v.includes("cupcake")) return SIZE.find((s) => s.k === "cupcakes"); return SIZE.find((s) => s.k !== "cupcakes" && v.startsWith(s.k.toLowerCase()) ) || (v.startsWith("4") ? SIZE[0] : null); };
   const pickFlav = (v) => { v = (v || "").toLowerCase(); const k = Object.keys(FLAV).find((f) => v.startsWith(f)); return k ? [k, ...FLAV[k]] : null; };
   const escapeHtml = (x) => String(x).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   let lastPrice = null, lastShape = "";
@@ -413,8 +435,8 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
 
   function drawCake() {
     const size = pickSize($("#what").value), flav = pickFlav($("#flavour").value);
-    const cols = findColours(colIn.value), tcol = findColours($("#textColour").value)[0];
-    const bc = cols[0] || "#FFF8EC", ac = cols[1] || (cols[0] ? "#FFFDF8" : "#CCB395");
+    let cols = findColours(colIn.value), tcol = findColours($("#textColour").value)[0];
+    let bc = cols[0] || "#FFF8EC", ac = cols[1] || (cols[0] ? "#FFFDF8" : "#CCB395");
     const msg = $("#msg").value.trim(), acrylic = $('input[name="Acrylic topper"]').checked;
     const occ = $("#occasion").value.toLowerCase(), candle = occ.includes("birthday");
     const wrap = $("#cakeWrap");
@@ -422,6 +444,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     const s = size || SIZE[1];
     let html = "";
     if (s.cups) {
+      if (s.xmas) { cols = ["#8E1B2A", "#FFF8EC", "#2F4A2F"]; ac = "#D4AF37"; }
       html = `${msg ? `<div class="topper${acrylic ? " acrylic" : ""}"><span class="sign">${escapeHtml(msg)}</span><span class="sticks"><i></i></span></div>` : ""}
         <div class="cups">${[0, 1, 2].map((i) => `<div class="cup" style="--bc:${cols[i % Math.max(cols.length, 1)] || bc};--ac:${ac}"><span class="swirl"></span><span class="case"></span></div>`).join("")}</div>
         <div class="plate" style="width:210px"></div>`;
@@ -450,7 +473,7 @@ footer { background: var(--deep); color: var(--latte); padding-block: 30px calc(
     if (!$("#what").value) { big = "Pick a size"; lines = ["Choose a cake size to see a starting price."]; }
     else if (!size) { big = "Let's chat"; lines = ["We'll work out the price together."]; }
     else {
-      total = size.base; lines.push(`${size.cups ? "12 cupcakes" : size.k.replace("\"", " inch")} £${size.base}`);
+      total = size.base; lines.push(`${size.label || size.k.replace("\"", " inch")} £${size.base}`);
       if (flav && flav[2] && !size.cups) { total += flav[2]; lines.push(`${flav[0][0].toUpperCase() + flav[0].slice(1)} +£${flav[2]}`); }
       if (acrylic && !size.cups) { total += 10; lines.push("Acrylic topper +£10"); }
       document.querySelectorAll('#addons input[data-key]:checked').forEach((i) => { total += +i.dataset.price; lines.push(`${i.parentElement.querySelector(".ad-name").textContent} +£${i.dataset.price}`); });
